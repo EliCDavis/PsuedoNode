@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <script src="js/libs/knockout-3.3.0.js"></script>
+        <script src="js/libs/jquery.min.js"></script>
+        <script src="js/libs/twitter-bootstrap/js/bootstrap.js"></script>
+        <!--<script src="js/libs/dojo/dojo.js"></script>-->
+        <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js"
+            data-dojo-config="async: true"></script><!--
+        -->
+        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
+        <link href="js/libs/twitter-bootstrap/css/bootstrap.css" rel="stylesheet">
+        
+        <script src="js/src/viewmodels/SystemViewModel.js"></script>
+        <script src="js/src/viewmodels/ApplicationViewModel.js"></script>
+        <script src="js/src/viewmodels/ClassViewModel.js"></script>
+        <script src="js/src/TabManager.js"></script>
+        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            
+            #SystemsWindow{
+                width: 20%;
+                margin: 1cm 1cm 1cm 1cm;
+                height: 88%;
+                position: absolute;
+            }
+            #NodeCanvas {
+                background-color: #311440;
+                
+                width: 100%;
+                height:100%;
+            }
+            #EditWindow{
+                width: 73%;
+                height: 88%;
+                left: 23%;
+                top: 0%;
+                margin: 1cm 1cm 1cm 1cm;
+                position: absolute;
+                
+            }
+            
+            .divider{
+                width:15px;
+                height:auto;
+                display:inline-block;
+            }
+            
+        </style>
+        <title>
+            Psuedo Note
+        </title>
+        
+    </head>
+    <body class="claro">
+      
+        <div id="application">
+            
+            <div id="EditWindow" class="panel panel-primary">
+                <div class="panel-heading">
+                <h3 class="panel-title">Edit</h3>
+                </div>
+
+                <div style="overflow: auto;" id = "EditHolder" class="panel-body">
+                    
+                    <ul class="nav nav-tabs" data-tabs="tabs" id="EditTabs">
+                        <li class="active">
+                            <a data-toggle='tab' href="#home">
+                                <span class='glyphicon glyphicon-home' aria-hidden='true'></span>
+                                Home
+                                <span class='divider'></span>
+                                <button type='button' class='btn btn-default btn-sm'>
+                                    <span class='glyphicon glyphicon-remove' aria-hidden='true'></span>
+                                </button>
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content" id="EditTabsContent">
+                        <div id="home"  class="tab-pane fade in active">
+                            <div class="row">
+                                <div class='col-xs-12 col-sm-6 col-md-4'>
+                                    <h3>Pseudo Node:</h3>
+                                </div>
+                                <div class='col-xs-12 col-sm-6 col-md-4'>
+                                    <h3></h3>
+                                </div>
+                                <div class='col-xs-12 col-sm-6 col-md-4'>
+                                    <h3>Log in to Github</h3>
+                                    <label for="exampleInputName2">Username</label>
+                                    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
+                                    <label for="exampleInputPassword1">Password</label>
+                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                     <button class="btn btn-default">Sign in</button>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='col-sm-12 col-md-6'>
+                                    <h3>About:</h3>
+                                </div>
+                                <div class='col-sm-12 col-md-6'>
+                                    <h3>Recent Updates:</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class='col-xs-12 col-sm-6 col-md-4'>
+                                    <h3>Technologies Used:</h3>
+                                    <ul>
+                                        <li>Knockout.js</li>
+                                        <li>Bootstrap</li>
+                                        <li>Dojo (or tried to)</li>
+                                        <li>jquery</li>
+                                    </ul>
+                                </div>
+                                <div class='col-xs-12 col-sm-6 col-md-4'>
+                                    <h3>About:</h3>
+                                </div>
+                                <div class='col-xs-12 col-sm-6 col-md-4'>
+                                    <h3>About:</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="SystemsWindow" class="panel panel-primary">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Pseudo Node</h3>
+                </div>
+
+                <div id="SystemsSelection"></div>
+                
+                <div style="overflow: auto; " id = "SystemHolder" class="panel-body"></div>
+            </div>
+            
+            
+            
+        </div>
+      
+        <script>
+            
+            jQuery(document).ready(function ($) {
+                $('#tabs').tab();
+            });
+            
+            
+            
+            
+            
+            var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see");
+            system1.purposes = ["Render All Player Stats", "Render Board Game"];
+            
+            var system2 = new SystemViewModel("Board Game", "Is the actual game. It's what the players interact with");
+            system2.purposes = ["Keeps up with player states", "Takes input from players"];
+            system2.id +=1;
+            //var systems = [system1,system2];
+            
+            var applicationsViewModel = new ApplicationViewModel();
+            applicationsViewModel.rootSystems.push(system1);
+            applicationsViewModel.rootSystems.push(system2);
+            console.log(applicationsViewModel.rootSystems()[0]);
+                  
+            openSystemEditTab(applicationsViewModel.rootSystems()[0]);
+
+            CreateSystemsWindow();
+            
+            
+            function createLayout(){
+                 require([
+                     
+                    "dojo/dom", 
+                     
+                    "dijit/layout/BorderContainer",
+                    "dijit/layout/ContentPane",
+                    "dijit/layout/TabContainer",
+                     
+                     
+                     "dojo/domReady!"
+               ], function(dom, BorderContainer, ContentPane, TabContainer){
+                   
+                    var applicationContainer = new BorderContainer({
+                        style: "height: 100%; width: 100%;",
+                        design : "sidebar"
+                    }, dom.byId("application"));
+
+                    var systemsView = new ContentPane({
+                        title : "Systems View",
+                        content: "left"
+                    });
+                    
+                    var editView = new TabContainer({
+                        title: "Editor View"
+                    });
+                    
+                    var cp1 = new ContentPane({
+                        title: "Food",
+                        content: "We offer amazing food"
+                    });
+                    editView.addChild(cp1);
+
+                    var cp2 = new ContentPane({
+                        title: "Drinks",
+                        content: "We are known for our drinks."
+                    });
+                    editView.addChild(cp2);
+                    
+                    applicationContainer.addChild(systemsView);
+                    applicationContainer.addChild(editView);
+                   
+               });
+            }
+            
+            
+           
+            
+           
+           
+            
+            
+            function CreateSystemsWindow(){
+            
+                // Require dependencies
+               require([
+                   "dijit/Menu",
+                   "dijit/MenuItem",
+                   "dijit/MenuBar",
+                   "dijit/MenuBarItem",
+                   "dijit/PopupMenuBarItem",
+                   
+                   "dojo/dom", 
+                   "dojo/dom-construct",
+                   
+                   "dojo/domReady!"
+                   
+                   
+               ], function(Menu, MenuItem, MenuBar, MenuBarItem, PopupMenuBarItem, dom, domConstruct){
+                   // create the Menu container
+                   var mainMenu = new MenuBar({}, "SystemsSelection");
+
+                   // create Menu container and child MenuItems
+                   // for our sub-menu (no srcNodeRef; we will
+                   //add it under a PopupMenuItem)
+                   var viewMenu = new Menu({
+                       id: "viewMenu"
+                   });
+
+                   // define the task sub-menu items
+                   viewMenu.addChild(new MenuItem({
+                       id: "All",
+                       label: "All"
+                   }));
+                   
+                   for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
+                        // define the task sub-menu items
+                        viewMenu.addChild(new MenuItem({
+                            id: i,
+                            label: "need to figure out how to update..."
+                        }));
+                   }
+
+                   // create and add main menu items
+                   mainMenu.addChild(new MenuBarItem({
+                       id: "addNew",
+                       label: "Add"
+                   }));
+
+                   mainMenu.addChild(new MenuBarItem({
+                       id: "edit",
+                       label: "Edit"
+                   }));
+
+                   // make task menu item open the sub-menu we defined above
+                   mainMenu.addChild(new PopupMenuBarItem({
+                       id: "veiw",
+                       label: "Veiw",
+                       popup: viewMenu
+                   }));
+
+                   mainMenu.startup();
+                   viewMenu.startup();
+                   
+                   var parentNode = dom.byId("SystemHolder");
+                    for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
+                        var html = "";
+                        //html +=systems[i].name+"</br>";
+                        html += "<h4>Description:</h4>";
+                        html +="<p data-bind='text: description'></p>";
+                        
+                        html += "<h4>Purposes:</h4>";
+                        if(applicationsViewModel.rootSystems()[i].purposes.length > 0){
+                            html +="<ul>";
+                            for(var p = 0; p < applicationsViewModel.rootSystems()[i].purposes.length; p ++){
+                                html +="<li>"+applicationsViewModel.rootSystems()[i].purposes[p]+"</li>";
+                            }
+                            html+="</ul>";
+                        } else {
+                             html+="<p>None</p>";
+                        }
+                        
+                        html += "<h4>Subsystems:</h4>";
+                        if(applicationsViewModel.rootSystems()[i].subSystems().length > 0){
+                            html +="<ul>";
+                            for(var p = 0; p < applicationsViewModel.rootSystems()[i].subSystems().length; p ++){
+                                html +="<li>"+applicationsViewModel.rootSystems()[i].subSystems()[p]+"</li>";
+                            }
+                            html+="</ul>";
+                        } else {
+                             html+="<p>None</p>";
+                        }
+                        
+                        html += "<h4>Classes:</h4>";
+                        if(applicationsViewModel.rootSystems()[i].classesAssociated().length > 0){
+                            html +="<ul>";
+                            for(var p = 0; p < applicationsViewModel.rootSystems()[i].classesAssociated().length; p ++){
+                                html +="<li>"+applicationsViewModel.rootSystems()[i].classesAssociated()[p]+"</li>";
+                            }
+                            html+="</ul>";
+                        } else {
+                             html+="<p>None</p>";
+                        }
+                        
+                        var panel = domConstruct.create('div', {class:"panel panel-default"},parentNode);
+                        
+                        var panelTitle = "<button type='button' class='btn sm' data-bind='click: openInTabs'>"+
+                                         "<span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button>   <span data-bind='text: name' class='panel-title' style='position: relative;'></span>";
+                        domConstruct.create('div' , { class:'panel-heading', innerHTML: panelTitle }, panel);
+                        
+                        domConstruct.create('div' , { class:'panel-body', innerHTML:  html}, panel);
+                    
+                        $(panel).ready(function() {
+                             ko.applyBindings(applicationsViewModel.rootSystems()[i], panel);
+                        });
+    
+                    }
+               });
+               
+               
+               
+               
+            }
+        </script>
+    </body>
+</html>

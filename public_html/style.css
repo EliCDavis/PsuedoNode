@@ -1,0 +1,35 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jun 12, 2015, 11:31:28 PM
+    Author     : Eli
+*/
+
+#SystemsWindow{
+    width: 20%;
+    margin: 1cm 1cm 1cm 1cm;
+    height: 88%;
+    position: absolute;
+}
+#NodeCanvas {
+    background-color: #311440;
+    width: 100%;
+    height: 100%;
+}
+#EditWindow{
+    width: 73%;
+    height: 88%;
+    left: 23%;
+    top: 0%;
+    margin: 1cm 1cm 1cm 1cm;
+    position: absolute;
+}
+
+.dividerSpace{
+    width:15px;
+    height:auto;
+    display:inline-block;
+}

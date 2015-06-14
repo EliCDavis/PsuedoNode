@@ -10,52 +10,28 @@ and open the template in the editor.
         <script src="js/libs/jquery.min.js"></script>
         <script src="js/libs/twitter-bootstrap/js/bootstrap.js"></script>
         <!--<script src="js/libs/dojo/dojo.js"></script>-->
-        <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js"
-            data-dojo-config="async: true"></script><!--
-        -->
+        <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>
+        
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
         <link href="js/libs/twitter-bootstrap/css/bootstrap.css" rel="stylesheet">
         
         <script src="js/src/viewmodels/SystemViewModel.js"></script>
         <script src="js/src/viewmodels/ApplicationViewModel.js"></script>
         <script src="js/src/viewmodels/ClassViewModel.js"></script>
+        <script src="js/src/viewmodels/PurposeViewModel.js"></script>
+        <script src="js/src/viewmodels/ObjectMethodViewModel.js"></script>
+        <script src ="js/src/viewmodels/DesignPatternTemplateViewModel.js"></script>
+        
         <script src="js/src/TabManager.js"></script>
+        
         
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <style>
-            
-            #SystemsWindow{
-                width: 20%;
-                margin: 1cm 1cm 1cm 1cm;
-                height: 88%;
-                position: absolute;
-            }
-            #NodeCanvas {
-                background-color: #311440;
-                
-                width: 100%;
-                height:100%;
-            }
-            #EditWindow{
-                width: 73%;
-                height: 88%;
-                left: 23%;
-                top: 0%;
-                margin: 1cm 1cm 1cm 1cm;
-                position: absolute;
-                
-            }
-            
-            .divider{
-                width:15px;
-                height:auto;
-                display:inline-block;
-            }
-            
-        </style>
+        
+         <link rel="stylesheet" href="style.css">
+        
         <title>
-            Psuedo Note
+            Psuedo Node
         </title>
         
     </head>
@@ -151,23 +127,19 @@ and open the template in the editor.
                 $('#tabs').tab();
             });
             
-            
-            
-            
-            
+           
             var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see");
-            system1.purposes = ["Render All Player Stats", "Render Board Game"];
             
             var system2 = new SystemViewModel("Board Game", "Is the actual game. It's what the players interact with");
-            system2.purposes = ["Keeps up with player states", "Takes input from players"];
             system2.id +=1;
             //var systems = [system1,system2];
             
             var applicationsViewModel = new ApplicationViewModel();
             applicationsViewModel.rootSystems.push(system1);
             applicationsViewModel.rootSystems.push(system2);
-            console.log(applicationsViewModel.rootSystems()[0]);
-                  
+            system1.application(applicationsViewModel);
+            system2.application(applicationsViewModel);
+            applicationsViewModel.start();
             openSystemEditTab(applicationsViewModel.rootSystems()[0]);
 
             CreateSystemsWindow();

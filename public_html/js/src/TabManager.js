@@ -83,7 +83,7 @@ function openPurposeEditTab(purposeView){
         var navTabHtml = "";
         var closeButton = "<button type='button' class='btn btn-default btn-sm' data-bind='click: closeTab'>"+
                              "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>";
-        var systemsIcon = "<span class='glyphicon glyphicon-file' aria-hidden='true'></span>";
+        var systemsIcon = "<span class='glyphicon glyphicon-star-empty' aria-hidden='true'></span>";
         navTabHtml += "<a data-toggle='tab' href='#edit"+purposeView.id+"' >"+systemsIcon+" <span data-bind='text: name'></span><span class='dividerSpace'></span>  "+closeButton+"</a>";
         var tabsNode = domConstruct.create('li' , {  innerHTML:  navTabHtml, id: purposeView.id}, tabsParent);
 
@@ -102,7 +102,7 @@ function openPurposeEditTab(purposeView){
         tabContentHtml += '<div class="input-group">';
         tabContentHtml += '<div class="input-group-addon">Name</div>';
         tabContentHtml += "<input type='text' class='form-control' data-bind='value: name'></input></div>";
-        tabContentHtml += "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea><br>";
+        tabContentHtml += "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Purpose'></textarea><br>";
         
         tabContentHtml+= "</div>";
         tabContentHtml+= "</div>";
@@ -154,33 +154,48 @@ function openClassEditTab(classView){
         tabContentHtml+= "<div class='row'>";
         tabContentHtml+= "<div class='col-xs-12 col-sm-6 col-md-4'>";
         
-        tabContentHtml += "<h4>Basic Info:</h4>";
-        tabContentHtml += "<h5 data-bind='with: system'>System:<span data-bind='text: name'></span></h5>";
+        tabContentHtml += "<h4>Basic Info <small data-bind='with: system'>\
+                            <span class='glyphicon glyphicon-cog' aria-hidden='true'></span>\
+                            <span data-bind='text: name'></span>\
+                        </small></h4>";
+        tabContentHtml += "";
         tabContentHtml += '<div class="input-group">';
         tabContentHtml += '<div class="input-group-addon">Name</div>';
         tabContentHtml += "<input type='text' class='form-control' data-bind='value: name'></input></div>";
         tabContentHtml += "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea><br>";
         
-        /**
-         * Need to fix purposes!
-         */
+        //Begin purposes
         var selectButton = "<div class='btn-group'>";
         selectButton += "<button type='button' class='btn btn-default btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>"+
-                            "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span><span class='caret'></span></button>";
+                            "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span><span class='caret'></span></button>        ";
         selectButton += "<ul class='dropdown-menu' role='menu' data-bind='foreach: purposesItDoesNotServe()'>";
-        selectButton += "<li><a href='#' data-bind='text: name, click: $parent.createNewMethod'></a></li>";
+        selectButton += "<li><a href='#' data-bind='text: name, click: $parent.addNewPurpose'></a></li>";
         selectButton += "</ul>";
         selectButton += "</div>";
         
+        var viewButton = "<button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>"+
+                             "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> </button>    ";
+                     
         tabContentHtml += "<h4>"+selectButton+" Purposes This Class Serves:</h4>";
         tabContentHtml += "<dl data-bind='foreach: purposesItServes'>";
-        tabContentHtml += "<dt><button data-bind='text: name(), click: openInTabs'></button></dt><dd data-bind='text: description()'></dd></dl>";
+        tabContentHtml += "<dt>"+viewButton+"<span data-bind='text: name'></span></dt><dd data-bind='text: description'></dd><div>(<a href='#' data-bind='click: $parent.removePurpose'>Remove</a>)</div><br></dl>";
+        tabContentHtml += "<div class='has-error' data-bind='visible: purposesItServes().length < 1'><div class='control-label'>A Class must have a purpose for exhisting!</div></div>";
         
-        tabContentHtml += "<h4>Design Patterns Implementing:</h4>";
-        
+        //Begin Design Patterns
+        selectButton = "<div class='btn-group'>";
+        selectButton += "<button type='button' class='btn btn-default btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>"+
+                            "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span><span class='caret'></span></button>        ";
+        selectButton += "<ul class='dropdown-menu' role='menu' data-bind='foreach: patternsItDoesNotImplement()'>";
+        selectButton += "<li><a href='#' data-bind='text: name, click: $parent.addNewPattern'></a></li>";
+        selectButton += "</ul>";
+        selectButton += "</div>";
+        tabContentHtml += "<h4>"+selectButton+"    Design Patterns Implementing:</h4>";
+    
+        var unselectDesignButton = "<button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.removePattern'>"+
+                             "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>    ";
+    
         tabContentHtml += "<dl data-bind='foreach: patternsImplementing'>";
-        tabContentHtml += "<dt><button data-bind='text: name(), click: openInTabs'></button></dt><dd data-bind='text: description()'></dd><.dl>";
-        
+        tabContentHtml += "<dt>"+unselectDesignButton+"<span data-bind='text: name'></span></dt><dd data-bind='text: description'></dd></dl>";
         
         
         tabContentHtml+= "</div>";
@@ -188,15 +203,37 @@ function openClassEditTab(classView){
         tabContentHtml += "<div class='col-sm-12 col-md-8'>";
         
         tabContentHtml += "<h4>Methods:</h4>";
-        
- 
-        tabContentHtml += "<div class='panel panel-default'>";
-        tabContentHtml += "<div class='panel-heading'>Class Specific</div>";
-        tabContentHtml += "<div class='panel-body'>";
+       
         
         tabContentHtml+= "<div class='row'>";
         
-        //populate with other methods
+        //populate with design pattern methods
+        tabContentHtml += "<span data-bind='foreach: getPatternMethods()'>";
+        
+        tabContentHtml += "<div class='col-xs-12 col-sm-6 col-md-4'>";
+        tabContentHtml += "<div class='panel panel-success'>";
+        tabContentHtml += "<div class='panel-heading' data-bind='text: name'></div>";
+        tabContentHtml += "<div class='panel-body'>";
+        
+        //Exhisting Method Form
+        tabContentHtml += '<div class="input-group">';
+        tabContentHtml += '<div class="input-group-addon">Name</div>';
+        tabContentHtml += "<input type='text' class='form-control' data-bind='value: name'></input></div>";
+        tabContentHtml += "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea><br>";
+        tabContentHtml += '<div class="input-group">';
+        tabContentHtml += '<div class="input-group-addon">Parameters</div>';
+        tabContentHtml += "<input type='text' class='form-control' data-bind='value: parameters'></input></div>";
+        tabContentHtml += '<div class="input-group">';
+        tabContentHtml += '<div class="input-group-addon">Returns</div>';
+        tabContentHtml += "<input type='text' class='form-control' data-bind='value: returnType'></input></div>";
+    
+        //ending echisting panel
+        tabContentHtml += "</div>";
+        tabContentHtml += "</div>";
+        tabContentHtml += "</div>";
+        tabContentHtml += "</span>";
+        
+        //populate with class specific methods
         tabContentHtml += "<span data-bind='foreach: methods'>";
         
         tabContentHtml += "<div class='col-xs-12 col-sm-6 col-md-4'>";
@@ -211,10 +248,10 @@ function openClassEditTab(classView){
         tabContentHtml += "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea><br>";
         tabContentHtml += '<div class="input-group">';
         tabContentHtml += '<div class="input-group-addon">Parameters</div>';
-        tabContentHtml += "<input type='text' class='form-control' data-bind='value: name'></input></div>";
+        tabContentHtml += "<input type='text' class='form-control' data-bind='value: parameters'></input></div>";
         tabContentHtml += '<div class="input-group">';
         tabContentHtml += '<div class="input-group-addon">Returns</div>';
-        tabContentHtml += "<input type='text' class='form-control' data-bind='value: name'></input></div>";
+        tabContentHtml += "<input type='text' class='form-control' data-bind='value: returnType'></input></div>";
     
         //ending echisting panel
         tabContentHtml += "</div>";
@@ -237,31 +274,12 @@ function openClassEditTab(classView){
         
         //ending parent panel
         tabContentHtml += "</div>";//ending row inside panel
-        tabContentHtml += "</div>";
-        tabContentHtml += "</div>";
+
         
         tabContentHtml += "</div>";
         
         //closing first row
         tabContentHtml+= "</div>";
-        
-       
-        
-        /*
-         * <div class="btn-group">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-    Action <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href="#">Action</a></li>
-    <li><a href="#">Another action</a></li>
-    <li><a href="#">Something else here</a></li>
-    <li class="divider"></li>
-    <li><a href="#">Separated link</a></li>
-  </ul>
-</div>
-         */
-        
         
         
         var contentNode = domConstruct.create('div' , 
@@ -310,9 +328,12 @@ function openClassEditTab(classView){
             ko.applyBindings(systemView, tabsNode);
         });
 
+        var viewButton = "<button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>"+
+                             "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> </button>    ";
+
         var tabsContentParent = dom.byId("EditTabsContent");
         var tabContentHtml = "<br>";
-        tabContentHtml+= "<div class='row'><div class='col-md-4'>";
+        tabContentHtml += "<div class='row'><div class='col-md-4'>";
 
         tabContentHtml += "<h4>Basic Info:</h4>";
         tabContentHtml += '<div class="input-group">';
@@ -324,17 +345,14 @@ function openClassEditTab(classView){
         
         var addPurposeButton = "<button type='button' class='btn btn-default' data-bind='click: addNewPurpose'>"+
                              "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </button>";
+                     
         tabContentHtml += "<h4>Purposes    "+addPurposeButton +"</h4>";
 
-        if(systemView.purposes.length > 0){
-            tabContentHtml +="<ul>";
-            for(var p = 0; p < systemView.purposes.length; p ++){
-                tabContentHtml +="<li>"+systemView.purposes[p]+"</li>";
-            }
-            tabContentHtml+="</ul>";
-        } else {
-             tabContentHtml+="<p>None</p>";
-        }
+        tabContentHtml += "<ul data-bind='foreach: purposes'>";
+        tabContentHtml +="<li>"+viewButton+" <span data-bind='text: name'></span></li>";
+        tabContentHtml += "</ul>";
+        
+        
         tabContentHtml += "</div>";
 
         tabContentHtml += "<div class='col-md-3'>";
@@ -344,7 +362,7 @@ function openClassEditTab(classView){
         
         
         tabContentHtml += "<dl data-bind='foreach: subSystems'>";
-        tabContentHtml += "<dt><button data-bind='text: name(), click: openInTabs'></button></dt><dd data-bind='text: description()'></dd>";
+        tabContentHtml += "<dt>"+viewButton+"<span data-bind='text: name(), click: openInTabs'></span></dt><dd data-bind='text: description()'></dd>";
         
     
         tabContentHtml += "</div>";
@@ -353,7 +371,7 @@ function openClassEditTab(classView){
 
         tabContentHtml += "<div class='row'>";  
 
-        tabContentHtml += "<div class='col-xs-12 col-md-9'>";
+        tabContentHtml += "<div class='col-xs-12 col-md-9' style='position:relative'>";
         tabContentHtml += '<canvas id="NodeCanvas"></canvas>';
         tabContentHtml += "</div>";
 
@@ -384,7 +402,7 @@ function openClassEditTab(classView){
         tabContentHtml += "<h4>Classes   "+addClassButton+"</h4>";
         tabContentHtml += "<dl data-bind='foreach: classesAssociated'>";
         
-        tabContentHtml += "<dt data-bind='text: name()'></dt><dd data-bind='text: description()'></dd>";
+        tabContentHtml += "<dt>"+viewButton+" <span data-bind='text: name'></span></dt><dd data-bind='text: description'></dd>";
         
         tabContentHtml += "</dl>";
         
@@ -398,7 +416,8 @@ function openClassEditTab(classView){
                 {  
                     innerHTML:  tabContentHtml,
                     class: 'tab-pane fade',
-                    id: "edit"+systemView.id
+                    id: "edit"+systemView.id,
+                    style:"height:100%; position:absolute"
                 }, 
                 tabsContentParent);
 

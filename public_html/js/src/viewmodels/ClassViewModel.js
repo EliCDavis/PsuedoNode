@@ -7,34 +7,88 @@
 
 function ClassViewModel(name, description){
     
-    this.id = Date.now();
+    var self = this;
     
-    this.name = ko.observable(name );
+    self.id = Date.now();
     
-    this.purposesItServes = ko.observableArray();
-    this.purposesItDoesNotServe = function(){
+    self.name = ko.observable(name );
+    
+    self.purposesItServes = ko.observableArray();
+
+    self.addNewPurpose = function(purpose){
+        self.purposesItServes.push(purpose);
+    };
+    
+    self.removePurpose = function(purpose){
+        self.purposesItServes.remove(purpose);
+    };
+    
+    self.purposesItDoesNotServe = function(){
         
-        var purposesNotServing = this.system().purposes;
+        var purposesNotServing = ko.observableArray();
         
+        for(var s = 0; s < self.system().purposes().length; s++){
+            if(self.purposesItServes().indexOf(self.system().purposes()[s]) === -1){
+                purposesNotServing.push(self.system().purposes()[s]);
+            }
+        }
+        
+        return purposesNotServing;
+        
+    };
+    
+    //the system the class is apart of
+    self.system = ko.observable();
+    
+    self.description = ko.observable(description);
+    
+    self.methods = ko.observableArray();
+    
+    self.createNewMethod = function(){
+        self.methods.push(new ObjectMethodViewModel());
+    };
+    
+    self.patternsImplementing = ko.observableArray();
+    
+    self.patternsItDoesNotImplement = function(){
+        var purposesNotServing = ko.observableArray();
+        
+        for(var s = 0; s < self.system().application().defaultDesignPatterns().length; s++){
+            if(self.patternsImplementing().indexOf(self.system().application().defaultDesignPatterns()[s]) === -1){
+                purposesNotServing.push(self.system().application().defaultDesignPatterns()[s]);
+            }
+        }
         
         return purposesNotServing;
     }
     
-    //the system the class is apart of
-    this.system = ko.observable();
-    
-    this.description = ko.observable(description);
-    
-    this.methods = ko.observableArray();
-    this.createNewMethod = function(){
-        console.log(this.id);
-        this.methods.push(new ObjectMethodViewModel());
+    self.addNewPattern = function(pattern){
+        self.patternsImplementing.push(pattern);
     };
     
-    this.patternsImplementing = ko.observableArray();
+    self.removePattern = function(pattern){
+        self.patternsImplementing.remove(pattern);
+    };
     
-    this.closeTab = function(){
-        closeTab(this.id);
+    self.getPatternMethods = function(){
+        var allMethods = ko.observableArray();
+        for(var i = 0; i < self.patternsImplementing().length; i ++){
+            for(var m = 0; m < self.patternsImplementing()[i].methodsThatComeWithPattern().length; m ++){
+                allMethods.push(self.patternsImplementing()[i].methodsThatComeWithPattern()[m]);
+            }
+            
+        }
+        return allMethods;
     }
+    
+    self.closeTab = function(){
+        closeTab(self.id);
+    };
+    
+    
+    this.openInTabs = function(){
+        openClassEditTab(this);
+       
+    };
     
 }

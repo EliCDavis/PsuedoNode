@@ -52,6 +52,6 @@ function SystemViewModel(name, description, isSubsystem){
     
     this.closeTab = function(){
         closeTab(this.id);
-    }
+    };
     
 };

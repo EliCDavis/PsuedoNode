@@ -7,14 +7,16 @@
 
 function ObjectMethodViewModel(){
     
-    this.name = ko.observable("Method Name");
-    this.description = ko.observable("Method Description");
+    var self = this;
     
-    this.returnType = ko.observable("void");
+    self.name = ko.observable("Method Name");
+    self.description = ko.observable("Method Description");
     
-    this.parameters = ko.observableArray();
+    self.returnType = ko.observable("void");
+    
+    self.parameters = ko.observableArray();
     
     //this should include constructors.
-    this.methodsItCalls = ko.observableArray();
+    self.methodsItCalls = ko.observableArray();
     
 }

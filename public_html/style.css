@@ -16,8 +16,8 @@ and open the template in the editor.
 }
 #NodeCanvas {
     background-color: #311440;
-    width: 100%;
-    height: 100%;
+    /* width: 100%; */
+    /* height: 100%; */
 }
 #EditWindow{
     width: 73%;

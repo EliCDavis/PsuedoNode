@@ -6,13 +6,19 @@
 
 function PurposeViewModel(){
     
-    this.id = Date.now();
+    var self = this;
     
-    this.name = ko.observable("Purpose");
-    this.description = ko.observable("Description");
+    self.id = Date.now();
     
-    this.closeTab = function(){
-        closeTab(this.id);
+    self.name = ko.observable("Purpose");
+    self.description = ko.observable("Description");
+    
+    self.closeTab = function(){
+        closeTab(self.id);
     }
+    
+    self.openInTabs = function(){
+        openPurposeEditTab(self);
+    };
     
 }

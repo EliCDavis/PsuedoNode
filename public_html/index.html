@@ -125,13 +125,7 @@ and open the template in the editor.
         <script>
             
             
-            var canvasSystem = new SystemRenderer();
-            function canvasUpdate(){
-                canvasSystem.renderSystem(document.getElementById("NodeCanvas"));
-                window.requestAnimationFrame(canvasUpdate);
-            }
-            
-            window.requestAnimationFrame(canvasUpdate);
+           
             
             
             
@@ -153,9 +147,27 @@ and open the template in the editor.
             system2.application(applicationsViewModel);
             applicationsViewModel.start();
             openSystemEditTab(applicationsViewModel.rootSystems()[0]);
+                console.log("Canvas Update!");
 
+
+            var systemCanvas = new SystemRenderer();
+            function canvasUpdate(){
+                
+                if(systemCanvas.canvas == null){
+                    systemCanvas.loadCanvas(document.getElementById("NodeCanvas"));
+                }
+                
+                systemCanvas.renderSystem();
+                window.requestAnimationFrame(canvasUpdate);
+            }
+            
+            window.requestAnimationFrame(canvasUpdate);
+
+            //Don't put anything after this if your offline, will throw errors and nothing else will get executed
             CreateSystemsWindow();
             
+           
+
             
             function createLayout(){
                  require([

@@ -7,6 +7,8 @@
 
 function SystemRenderer(){
     
+    var self = this;
+    
     this.systemToRender;
     
     this.testNodes = {
@@ -46,49 +48,136 @@ function SystemRenderer(){
         ]
     };
     
+    //think about having this generated once when you load in a system.
+    this.getAllNodes = function(systemsRoot){
+        var nodes = [];
+        for(var n = 0; n < systemsRoot.nodes.length; n ++){
+            var curNodes = this.recurseNodes(systemsRoot.nodes[n]);
+            for(var i = 0; i < curNodes.length; i ++){
+                nodes.push(curNodes[i]);
+            }
+        }
+        return nodes;
+    };
+    
+    this.recurseNodes = function(root){
+        var nodes = [];
+        nodes.push(root);
+        for(var i = 0; i < root.children.length; i ++){
+            var curNodes = this.recurseNodes(root.children[i]);
+            
+            for(var n = 0; n < curNodes.length; n ++){
+                nodes.push(curNodes[n]);
+            }
+        }
+        return nodes;
+    };
+    
+    this.canvas;
+    
+    this.loadCanvas = function(canvas){
+        this.canvas = canvas;
+        canvas.addEventListener('mouseup',function(e){
+            self.mouseUpCalled(e);
+        });
+        canvas.addEventListener('mousedown',function(e){
+            self.mouseDownCalled(e);
+        });
+        canvas.addEventListener('mouseout',function(e){
+            self.mouseOutCalled(e);
+        });
+        canvas.addEventListener('mousemove',function(e){
+            self.updateDrag(e);
+        });
+    };
+    
+    
+    this.mouseDownCalled = function(e){
+        
+        console.log('click: ' + e.offsetX + '/' + e.offsetY);
+        var nodes = this.getAllNodes(this.testNodes);
+        for(var i = 0; i < nodes.length; i ++){
+            //determined if node got clicked.
+            if(e.offsetX >= nodes[i].position[0] && e.offsetX <= nodes[i].position[0]+nodes[i].size[0] &&
+                    e.offsetY >= nodes[i].position[1] && e.offsetY <= nodes[i].position[1]+nodes[i].size[1]){ // if within bounds
+                
+                console.log("node got clicked!");
+                
+                this.nodeDragging = nodes[i];
+                this.positionOnNodeDragging = [e.offsetX - nodes[i].position[0], e.offsetY - nodes[i].position[1]];
+                
+                return;
+            }
+        }
+        
+    };
+    
+    
+    
+    //--------------------------------------------Drag System (insert pun here)-----------------------
+    this.nodeDragging = null;
+    this.positionOnNodeDragging = null;
+    
     this.loadSystemToRender = function(system){
         this.systemToRender = system;
     };
     
-    this.fitToContainer = function(canvas){
+    this.mouseOutCalled = function(e){
+        this.nodeDragging  = null;
+    };
+    
+    this.mouseUpCalled = function(e){
+        this.nodeDragging  = null;
+    };
+    
+    this.updateDrag = function(e){
+        if(self.nodeDragging != null){
+            self.nodeDragging.position = [e.offsetX - self.positionOnNodeDragging[0], e.offsetY - self.positionOnNodeDragging[1]];
+        }
+    };
+    
+    //--------------------------------------------Render System--------------------------------------
+    this.fitToContainer = function(){
         // Make it visually fill the positioned parent
-        canvas.style.width ='100%';
-        canvas.style.height='100%';
+        this.canvas.style.width ='100%';
+        this.canvas.style.height='100%';
         // ...then set the internal size to match
-        canvas.width  = canvas.offsetWidth;
-        //canvas.height = window.innerHeight*.5; 
+        this.canvas.width  = this.canvas.offsetWidth;
+        //this.canvas.height = window.innerHeight*.5; 
         
-        //canvas.height = canvas.parentNode.parentNode.parentNode.getChild.childNodes[0].offsetHeight;
-        //console.log(canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight);
-        canvas.height = canvas.parentNode.parentNode.parentNode.offsetHeight - canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight-150;
+        //this.canvas.height = this.canvas.parentNode.parentNode.parentNode.getChild.childNodes[0].offsetHeight;
+        //console.log(this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight);
+        this.canvas.height = this.canvas.parentNode.parentNode.parentNode.offsetHeight - this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight-150;
         
     }
     
-    this.renderSystem = function(canvas){
+    this.renderSystem = function(){
         
-        if(canvas === null){
+        if(this.canvas === null){
             return;
         }
         
-        this.fitToContainer(canvas);
         
-        var ctx = canvas.getContext('2d');
+        
+        this.fitToContainer();
+        
+        var ctx = this.canvas.getContext('2d');
         
         ctx.beginPath();
-        ctx.rect(0, 0, canvas.width, canvas.height);
+        ctx.rect(0, 0, this.canvas.width, this.canvas.height);
         ctx.fillStyle = 'Black';
         ctx.fill();
         
         ctx.beginPath();
-        ctx.rect(1, 1, canvas.width-2, canvas.height-2);
+        ctx.rect(1, 1, this.canvas.width-2, this.canvas.height-2);
         ctx.fillStyle = 'White';
         ctx.fill();
         
-        this.drawNode(canvas, ctx, this.testNodes.nodes[0]);
+        this.drawNode(ctx, this.testNodes.nodes[0]);
         
     };
     
-    this.drawNode = function(canvas, ctx, nodeToDraw){
+    this.drawNode = function(ctx, nodeToDraw){
         
         if(nodeToDraw == null){
             return;
@@ -109,7 +198,7 @@ function SystemRenderer(){
             ctx.stroke();
             
             //draw actual nodes
-            this.drawNode(canvas, ctx, nodeToDraw.children[i]);
+            this.drawNode( ctx, nodeToDraw.children[i]);
         }
         
         ctx.beginPath();

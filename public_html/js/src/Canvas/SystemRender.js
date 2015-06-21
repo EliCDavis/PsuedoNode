@@ -9,7 +9,9 @@ function SystemRenderer(){
     
     var self = this;
     
-    this.systemToRender;
+    this.systemToRender = null;
+    
+    this.colorSelector = new ColorSelector();
     
     this.testNodes = {
         "collectionName": "Test Collection",
@@ -89,20 +91,19 @@ function SystemRenderer(){
         canvas.addEventListener('mousemove',function(e){
             self.updateDrag(e);
         });
+    
     };
-    
-    
+
+
+
     this.mouseDownCalled = function(e){
         
-        console.log('click: ' + e.offsetX + '/' + e.offsetY);
         var nodes = this.getAllNodes(this.testNodes);
         for(var i = 0; i < nodes.length; i ++){
             //determined if node got clicked.
             if(e.offsetX >= nodes[i].position[0] && e.offsetX <= nodes[i].position[0]+nodes[i].size[0] &&
                     e.offsetY >= nodes[i].position[1] && e.offsetY <= nodes[i].position[1]+nodes[i].size[1]){ // if within bounds
-                
-                console.log("node got clicked!");
-                
+                                
                 this.nodeDragging = nodes[i];
                 this.positionOnNodeDragging = [e.offsetX - nodes[i].position[0], e.offsetY - nodes[i].position[1]];
                 
@@ -114,12 +115,77 @@ function SystemRenderer(){
     
     
     
-    //--------------------------------------------Drag System (insert pun here)-----------------------
+    //--------------------------------------------Drag System (insert pun here)-------------------------------
     this.nodeDragging = null;
     this.positionOnNodeDragging = null;
     
     this.loadSystemToRender = function(system){
+                
         this.systemToRender = system;
+        
+        //build nodes off of system needed to render.
+        var newNodes = {
+            "collectionName": system.name,
+            "nodes":[]
+        };
+        
+        newNodes.nodes.push(this.createSystemNode(system));
+        
+        
+        this.testNodes = newNodes;
+    };
+    
+    this.createSystemNode = function(systemArg, parent){
+        
+        var size = [50,50];
+        
+        if(systemArg.isSubsystem){
+            size = [35,35];
+        }
+        
+        var systemNode = {
+            "id": systemArg.id,
+            "name": systemArg.name,
+            "description":systemArg.description,
+            "color": this.colorSelector.getRandomColor(),
+            "minimized": false,
+            "position" : [this.canvas.width/2,this.canvas.height/2],
+            "size": size,
+            "links": [],
+            "parent":parent,
+            "children" : []
+        };
+        if(systemArg.subSystems != null){
+          for(var i = 0; i < systemArg.subSystems().length; i ++){
+                systemNode.children.push(this.createSystemNode( systemArg.subSystems()[i], systemNode ));
+            }  
+        }
+        
+        if(systemArg.classesAssociated != null){
+            for(var i = 0; i < systemArg.classesAssociated().length; i ++){
+                systemNode.children.push(this.createClassNode( systemArg.classesAssociated()[i], systemNode ));
+            }
+        }
+        return systemNode;
+    };
+    
+    this.createClassNode = function(classView,systemNode){
+        
+        var classNode = {
+            "id": classView.id,
+            "name": classView.name,
+            "description":classView.description,
+            "color" : this.colorSelector.getClassColor(systemNode.color),
+            "minimized": false,
+            "position" : [10,10],
+            "size": [20,20],
+            "links": [],
+            "parent":systemNode,
+            "children" : []
+        };
+        
+        return classNode;
+        
     };
     
     this.mouseOutCalled = function(e){
@@ -139,8 +205,8 @@ function SystemRenderer(){
     //--------------------------------------------Render System--------------------------------------
     this.fitToContainer = function(){
         // Make it visually fill the positioned parent
-        this.canvas.style.width ='100%';
-        this.canvas.style.height='100%';
+        this.canvas.style.width = '100%';
+        this.canvas.style.height= '100%';
         // ...then set the internal size to match
         this.canvas.width  = this.canvas.offsetWidth;
         //this.canvas.height = window.innerHeight*.5; 
@@ -149,7 +215,116 @@ function SystemRenderer(){
         //console.log(this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight);
         this.canvas.height = this.canvas.parentNode.parentNode.parentNode.offsetHeight - this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight-150;
         
-    }
+    };
+    
+    /*
+     * This is meant to have nodes auto adjust themselves so when they spawn they don't just sit on top of eachother.
+     * Oh god this is going to get messy.
+     */
+    this.gravitate = function(){
+        
+        var nodes = this.getAllNodes(this.testNodes);
+        var nodesDirections = [];
+        
+        var desiredLengthToParent = 80;//around how many pixels close does it want to be to the parent
+        var desiredDistanceFromOtherNodes = 50;
+        
+        for(var i = 0; i < nodes.length; i ++){
+            
+            var curID = nodes[i].id;
+            var curNodePosition = [nodes[i].position[0] + (nodes[i].size[0]/2) , 
+                nodes[i].position[1] + (nodes[i].size[1]/2)];
+            
+            var thisNodesDirection = [0,0];
+            
+            for(var nc = 0; nc < nodes.length; nc ++){
+                if(nodes[nc].id !== curID){//make sure we're not looking at ourself.
+                    
+                    var nodeIsParent = false;
+                    
+                    //do we have a parent?
+                    if(nodes[i].parent != null){
+                        //is this our parent?
+                        if(nodes[i].parent.id === nodes[nc].id){
+                            nodeIsParent = true;
+                        }
+                    }
+                    
+                    
+                    
+                    //actual center position of node
+                    var nodeEvalPos = [nodes[nc].position[0] + (nodes[nc].size[0]/2) , 
+                        nodes[nc].position[1] + (nodes[nc].size[1]/2)];
+                    
+                    var distanceFromNode = Math.sqrt( Math.pow( curNodePosition[0] - nodeEvalPos[0], 2 ) + 
+                            Math.pow( curNodePosition[1] - nodeEvalPos[1], 2) );
+                    
+                    //determine the maginitude we need to move
+                    var magnitudeWeShouldTravel = 0;
+                    
+                    if( nodeIsParent ){
+                        //if we have a parent, try making it at the specific distance
+                        if(distanceFromNode > desiredLengthToParent){
+                            magnitudeWeShouldTravel = Math.pow(distanceFromNode / desiredLengthToParent, 2);
+                        } else {
+                            magnitudeWeShouldTravel = Math.pow( (desiredLengthToParent-distanceFromNode) / desiredLengthToParent, 1);
+                        }
+                        
+                        //likely will never exactly be the desired length, so we settle for a range.
+                        if(distanceFromNode < desiredLengthToParent+1 && distanceFromNode > desiredLengthToParent-1){
+                            magnitudeWeShouldTravel = 0;
+                        }
+                        
+                    } else {
+                        //if not a parent then just make sure we're not too close to other nodes.
+                        if(distanceFromNode < desiredDistanceFromOtherNodes){
+                            magnitudeWeShouldTravel = Math.pow( ((desiredDistanceFromOtherNodes*2)-distanceFromNode) / desiredDistanceFromOtherNodes, 2);
+                        }
+                    }
+                    
+                    if(nodes[i].parent == null){
+                        magnitudeWeShouldTravel = 0;
+                    }
+                    
+                    //now figure out the direction we need to move in.
+                    var directionToMoveIn = [0,0];
+                    
+                    if(nodeIsParent){
+                        directionToMoveIn = [nodeEvalPos[0] -  curNodePosition[0], nodeEvalPos[1]-curNodePosition[1]];
+                        var divideBy = Math.max(Math.abs(directionToMoveIn[0]), Math.abs(directionToMoveIn[1]));
+                        directionToMoveIn = [directionToMoveIn[0]/divideBy, directionToMoveIn[1]/divideBy];
+                        
+                        if(distanceFromNode < desiredLengthToParent){
+                            directionToMoveIn = [directionToMoveIn[0]*-1, directionToMoveIn[1]*-1];
+                        }
+                    } else {
+                        directionToMoveIn = [nodeEvalPos[0] -  curNodePosition[0], nodeEvalPos[1]-curNodePosition[1]];
+                        var divideBy = Math.max(Math.abs(directionToMoveIn[0]), Math.abs(directionToMoveIn[1]));
+                        if(divideBy !== 0){
+                            directionToMoveIn = [directionToMoveIn[0]/divideBy, directionToMoveIn[1]/divideBy];
+                            directionToMoveIn = [directionToMoveIn[0]*-1, directionToMoveIn[1]*-1];
+                        } else {
+                            directionToMoveIn = [Math.random(), Math.random()];
+                        }
+                        
+                    }
+
+                    //formulate actual movement
+                    directionToMoveIn = [directionToMoveIn[0] * magnitudeWeShouldTravel,directionToMoveIn[1] * magnitudeWeShouldTravel];
+                    thisNodesDirection = [thisNodesDirection[0]+directionToMoveIn[0], thisNodesDirection[1]+directionToMoveIn[1]];
+                }
+                               
+            }
+            nodesDirections.push(thisNodesDirection);
+        }
+        
+        //move all nodes
+        for(var i = 0; i < nodes.length; i ++){
+            nodes[i].position[0] = nodes[i].position[0] + nodesDirections[i][0];
+            nodes[i].position[1] = nodes[i].position[1] + nodesDirections[i][1];
+        }
+        
+    };
     
     this.renderSystem = function(){
         
@@ -157,9 +332,9 @@ function SystemRenderer(){
             return;
         }
         
-        
-        
         this.fitToContainer();
+        
+        this.gravitate();
         
         var ctx = this.canvas.getContext('2d');
         
@@ -193,19 +368,61 @@ function SystemRenderer(){
             ctx.beginPath();
             ctx.moveTo(nodeToDraw.position[0] + (nodeToDraw.size[0]/2), nodeToDraw.position[1] + (nodeToDraw.size[1]/2));
             ctx.lineTo(nodeToDraw.children[i].position[0] + (nodeToDraw.children[i].size[0]/2), nodeToDraw.children[i].position[1] + (nodeToDraw.children[i].size[1]/2));
-            ctx.lineWidth = 2;
-            ctx.strokeStyle = "Blue";
+            ctx.lineWidth = 1;
+            ctx.strokeStyle = "Black";
             ctx.stroke();
             
             //draw actual nodes
             this.drawNode( ctx, nodeToDraw.children[i]);
         }
         
+        //Drawing single node we're on
         ctx.beginPath();
         ctx.rect(nodeToDraw.position[0], nodeToDraw.position[1], nodeToDraw.size[0], nodeToDraw.size[1]);
-        ctx.fillStyle = 'Black';
+        ctx.fillStyle = nodeToDraw.color;
         ctx.fill();
         
     };
     
+}
+
+
+//Used to keep up with what colors have been selected by the different systems and what colors to use for
+function ColorSelector(){
+    
+    this.colorsForSelection = ['#0000ff',"#ff0000",'#00ff00'];
+    this.colorsAlreadySelected = [];
+    
+    this.getRandomColor = function(){
+        
+        //find a color that hasn't been taken yet.
+        var index = Math.floor((Math.random() * this.colorsForSelection.length));
+        var indexHasBeenFound = false;
+        while(!indexHasBeenFound){
+       
+            if(this.colorsAlreadySelected.indexOf(index) === -1){
+                indexHasBeenFound = true;
+            } else {
+                index = Math.floor((Math.random() * this.colorsForSelection.length));
+            }
+       
+        }
+        
+        this.colorsAlreadySelected.push(index);
+        return this.colorsForSelection[index];
+    }
+    
+    
+    this.getSystemBorder = function(curColor){
+        
+    };
+    
+    this.getClassColor = function(systemColor){
+        return systemColor;
+    };
+
+    this.getClassBorderColor = function(systemColor){
+        
+    };
+
 }

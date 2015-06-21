@@ -7,6 +7,9 @@
 
 function ApplicationViewModel(){
     
+    this.namingConventions;
+    this.caseConventions;
+    
     //type SystemViewModel
     this.rootSystems = ko.observableArray();
     

@@ -124,38 +124,47 @@ and open the template in the editor.
       
         <script>
             
-            
-           
-            
-            
-            
             jQuery(document).ready(function ($) {
                 $('#tabs').tab();
             });
-            
            
             var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see");
-            
-            var system2 = new SystemViewModel("Board Game", "Is the actual game. It's what the players interact with");
-            system2.id +=1;
-            //var systems = [system1,system2];
+            system1.classesAssociated.push(new ClassViewModel());
+            system1.classesAssociated()[system1.classesAssociated().length-1].id += 10;     
+            system1.classesAssociated.push(new ClassViewModel());
+            system1.classesAssociated()[system1.classesAssociated().length-1].id += 20;   
+            system1.classesAssociated.push(new ClassViewModel());
+            system1.classesAssociated()[system1.classesAssociated().length-1].id += 30;   
+            system1.subSystems.push(new SystemViewModel());
+            system1.subSystems()[0].id += 40;
+            system1.subSystems()[0].isSubsystem = true;
+            system1.subSystems()[0].classesAssociated.push(new ClassViewModel());
+            system1.subSystems()[0].classesAssociated()[system1.subSystems()[0].classesAssociated().length-1].id += 50;   
+            system1.subSystems()[0].classesAssociated.push(new ClassViewModel());
+            system1.subSystems()[0].classesAssociated()[system1.subSystems()[0].classesAssociated().length-1].id += 60;   
+
             
             var applicationsViewModel = new ApplicationViewModel();
             applicationsViewModel.rootSystems.push(system1);
-            applicationsViewModel.rootSystems.push(system2);
+           
             system1.application(applicationsViewModel);
-            system2.application(applicationsViewModel);
+            
             applicationsViewModel.start();
+           
             openSystemEditTab(applicationsViewModel.rootSystems()[0]);
-                console.log("Canvas Update!");
-
 
             var systemCanvas = new SystemRenderer();
             function canvasUpdate(){
                 
                 if(systemCanvas.canvas == null){
                     systemCanvas.loadCanvas(document.getElementById("NodeCanvas"));
+                } else {
+                    if(systemCanvas.systemToRender == null){
+                        systemCanvas.loadSystemToRender(system1);
+                    }
                 }
+                
+                
                 
                 systemCanvas.renderSystem();
                 window.requestAnimationFrame(canvasUpdate);
@@ -166,8 +175,6 @@ and open the template in the editor.
             //Don't put anything after this if your offline, will throw errors and nothing else will get executed
             CreateSystemsWindow();
             
-           
-
             
             function createLayout(){
                  require([

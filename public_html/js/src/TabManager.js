@@ -425,6 +425,7 @@ function openClassEditTab(classView){
             ko.applyBindings(systemView, contentNode);
             tabManager.openNewTab(systemView.id);
             activateTab(systemView.id);
+            systemView.systemRenderer.loadCanvas(contentNode.getElementsByTagName("Canvas")[0]);
         });
 
     });

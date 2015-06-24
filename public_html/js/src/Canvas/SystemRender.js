@@ -78,7 +78,13 @@ function SystemRenderer(){
     this.canvas;
     
     this.loadCanvas = function(canvas){
+        
+        if(canvas == null){
+            return;
+        }
+        
         this.canvas = canvas;
+        
         canvas.addEventListener('mouseup',function(e){
             self.mouseUpCalled(e);
         });
@@ -91,7 +97,9 @@ function SystemRenderer(){
         canvas.addEventListener('mousemove',function(e){
             self.updateDrag(e);
         });
-    
+        
+       this.renderSystem();
+        
     };
 
 
@@ -130,17 +138,22 @@ function SystemRenderer(){
         };
         
         newNodes.nodes.push(this.createSystemNode(system));
-        
+        this.colorSelector = new ColorSelector();
         
         this.testNodes = newNodes;
     };
     
     this.createSystemNode = function(systemArg, parent){
-        
+                
         var size = [50,50];
         
-        if(systemArg.isSubsystem){
+        if(systemArg.subsystemOf != null){
             size = [35,35];
+        }
+        
+        var position = [10,10];
+        if(this.canvas != null){
+            position = [this.canvas.width*Math.random(),this.canvas.height*Math.random()];
         }
         
         var systemNode = {
@@ -149,14 +162,15 @@ function SystemRenderer(){
             "description":systemArg.description,
             "color": this.colorSelector.getRandomColor(),
             "minimized": false,
-            "position" : [this.canvas.width/2,this.canvas.height/2],
+            "position" : position,
             "size": size,
             "links": [],
             "parent":parent,
             "children" : []
         };
+        
         if(systemArg.subSystems != null){
-          for(var i = 0; i < systemArg.subSystems().length; i ++){
+            for(var i = 0; i < systemArg.subSystems().length; i ++){
                 systemNode.children.push(this.createSystemNode( systemArg.subSystems()[i], systemNode ));
             }  
         }
@@ -328,7 +342,7 @@ function SystemRenderer(){
     
     this.renderSystem = function(){
         
-        if(this.canvas === null){
+        if(this.canvas == null){
             return;
         }
         
@@ -348,7 +362,11 @@ function SystemRenderer(){
         ctx.fillStyle = 'White';
         ctx.fill();
         
-        this.drawNode(ctx, this.testNodes.nodes[0]);
+        for(var i = 0; i < this.testNodes.nodes.length; i ++){
+            this.drawNode(ctx, this.testNodes.nodes[i]);
+        }
+        
+        //window.requestAnimationFrame(this.renderSystem());
         
     };
     
@@ -358,9 +376,7 @@ function SystemRenderer(){
             return;
         }
                
-        
         //draw lines linking to other aspects of the program ( class referencing another class in a method )
-        
         
         for(var i = 0; i < nodeToDraw.children.length; i ++){
             
@@ -379,9 +395,14 @@ function SystemRenderer(){
         //Drawing single node we're on
         ctx.beginPath();
         ctx.rect(nodeToDraw.position[0], nodeToDraw.position[1], nodeToDraw.size[0], nodeToDraw.size[1]);
-        ctx.fillStyle = nodeToDraw.color;
+        ctx.fillStyle = this.colorSelector.getBorder(nodeToDraw.color);
         ctx.fill();
         
+        ctx.beginPath();
+        ctx.rect(nodeToDraw.position[0]+2, nodeToDraw.position[1]+2, nodeToDraw.size[0]-4, nodeToDraw.size[1]-4);
+        ctx.fillStyle = (nodeToDraw.color);
+        ctx.fill();
+    
     };
     
 }
@@ -390,7 +411,8 @@ function SystemRenderer(){
 //Used to keep up with what colors have been selected by the different systems and what colors to use for
 function ColorSelector(){
     
-    this.colorsForSelection = ['#0000ff',"#ff0000",'#00ff00'];
+    this.colorsForSelection = ['#F94F48',"#FF6A41",'#B4B4B4','#D5D5D5', '#E973F5','#237FEA',
+        '#F2B838','#19EC5A','#2395DE','#D4B57F'];
     this.colorsAlreadySelected = [];
     
     this.getRandomColor = function(){
@@ -409,20 +431,21 @@ function ColorSelector(){
         }
         
         this.colorsAlreadySelected.push(index);
+        
+        if(this.colorsAlreadySelected.length == this.colorsForSelection.length){
+            this.colorsAlreadySelected = [];
+        }
+        
         return this.colorsForSelection[index];
     }
     
     
-    this.getSystemBorder = function(curColor){
-        
+    this.getBorder = function(curColor){
+        return '#'+new Values(curColor).shade(25).hex;
     };
     
     this.getClassColor = function(systemColor){
-        return systemColor;
-    };
-
-    this.getClassBorderColor = function(systemColor){
-        
+        return '#'+new Values(systemColor).tint(25).hex;
     };
 
 }

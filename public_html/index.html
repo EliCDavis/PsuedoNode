@@ -6,11 +6,14 @@ and open the template in the editor.
 -->
 <html>
     <head>
+    
         <script src="js/libs/knockout-3.3.0.js"></script>
         <script src="js/libs/jquery.min.js"></script>
         <script src="js/libs/twitter-bootstrap/js/bootstrap.js"></script>
-        <script src="js/libs/dojo/dojo.js"></script>
-        <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>-->
+        <!--<script src="js/libs/dojo/dojo.js"></script>-->
+        <script src = "js/libs/noeldelgado_Values.js_master_index.js"></script><!--Shading and Lightening Colors-->
+        
+        <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>
         
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
         <link href="js/libs/twitter-bootstrap/css/bootstrap.css" rel="stylesheet">
@@ -32,7 +35,7 @@ and open the template in the editor.
          <link rel="stylesheet" href="style.css">
         
         <title>
-            Psuedo Node
+            Pseudo Node
         </title>
         
     </head>
@@ -128,21 +131,7 @@ and open the template in the editor.
                 $('#tabs').tab();
             });
            
-            var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see");
-            system1.classesAssociated.push(new ClassViewModel());
-            system1.classesAssociated()[system1.classesAssociated().length-1].id += 10;     
-            system1.classesAssociated.push(new ClassViewModel());
-            system1.classesAssociated()[system1.classesAssociated().length-1].id += 20;   
-            system1.classesAssociated.push(new ClassViewModel());
-            system1.classesAssociated()[system1.classesAssociated().length-1].id += 30;   
-            system1.subSystems.push(new SystemViewModel());
-            system1.subSystems()[0].id += 40;
-            system1.subSystems()[0].isSubsystem = true;
-            system1.subSystems()[0].classesAssociated.push(new ClassViewModel());
-            system1.subSystems()[0].classesAssociated()[system1.subSystems()[0].classesAssociated().length-1].id += 50;   
-            system1.subSystems()[0].classesAssociated.push(new ClassViewModel());
-            system1.subSystems()[0].classesAssociated()[system1.subSystems()[0].classesAssociated().length-1].id += 60;   
-
+            var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see"); 
             
             var applicationsViewModel = new ApplicationViewModel();
             applicationsViewModel.rootSystems.push(system1);
@@ -153,25 +142,31 @@ and open the template in the editor.
            
             openSystemEditTab(applicationsViewModel.rootSystems()[0]);
 
-            var systemCanvas = new SystemRenderer();
-            function canvasUpdate(){
+            
+            function canvasUpdate(){    
                 
-                if(systemCanvas.canvas == null){
-                    systemCanvas.loadCanvas(document.getElementById("NodeCanvas"));
-                } else {
-                    if(systemCanvas.systemToRender == null){
-                        systemCanvas.loadSystemToRender(system1);
-                    }
+                for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
+                    renderSystems(applicationsViewModel.rootSystems()[i]);
                 }
                 
-                
-                
-                systemCanvas.renderSystem();
+                //systemCanvas.renderSystem();
                 window.requestAnimationFrame(canvasUpdate);
             }
             
-            window.requestAnimationFrame(canvasUpdate);
 
+            function renderSystems(rootSystem){
+                
+                rootSystem.systemRenderer.renderSystem();
+                
+                for(var i = 0; i < rootSystem.subSystems().length; i ++){
+                    renderSystems(rootSystem.subSystems()[i]);
+                }
+                
+            }
+            
+            window.requestAnimationFrame(canvasUpdate);
+            
+            
             //Don't put anything after this if your offline, will throw errors and nothing else will get executed
             CreateSystemsWindow();
             

@@ -15,12 +15,13 @@ function SystemViewModel(name, description, subSystemOf){
     self.systemRenderer.loadSystemToRender(self);
     
     //if the system is a sub system of another system, this is the system it is a subsystem of. XD
+    //MAKE THIS AN OBSERVABLE
     self.subsystemOf = subSystemOf;
     
     this.application = ko.observable();
     
     this.name = ko.observable(name);
-    this.purposes = ko.observableArray();
+    
     this.description = ko.observable(description);
     this.subSystems = ko.observableArray();
     
@@ -55,13 +56,41 @@ function SystemViewModel(name, description, subSystemOf){
         self.subSystems()[self.subSystems().length-1].application(this.application());
         openSystemEditTab(self.subSystems()[self.subSystems().length-1], self);
         
+        
         self.updateRenderer();
     };
+    
+    
+    /**
+     * The purposes that this specific system defines.
+     */
+    this.purposes = ko.observableArray();
     
     this.addNewPurpose = function(){
         this.purposes.push( new PurposeViewModel() );
         openPurposeEditTab(this.purposes()[this.purposes().length-1]);
     };
+    
+    
+    /**
+     * Returns all purposes defined in this system and any parent system purposes.
+     * Technically a recursive function because it chains up the sub systems.
+     * 
+     * @returns {PurposeViewModel[]}
+     */
+    this.getAllPurposesUpBranch = function(){
+        var allPurposes = this.purposes();
+        
+        //if we don't have a parenet system then all purposes a class can have are in this single system.
+        if(self.subsystemOf == null){
+            return allPurposes;
+        }
+        
+        for(var i = 0; i < self.subsystemOf.getAllPurposesUpBranch().length; i ++){
+            allPurposes.push(self.subsystemOf.getAllPurposesUpBranch()[i]);
+        }
+        return allPurposes;
+    }
     
     this.openInTabs = function(){
         if(self.subsystemOf != null){

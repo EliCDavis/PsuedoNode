@@ -558,8 +558,8 @@ function SystemRenderer() {
  */
 function ColorSelector() {
 
-    this.colorsForSelection = ['#F94F48', "#FF6A41", '#B4B4B4', '#D5D5D5', '#E973F5', '#237FEA',
-        '#F2B838', '#19EC5A', '#2395DE', '#D4B57F'];
+    this.colorsForSelection = ['#F94F48', '#FF6A41', '#B4B4B4', '#D5D5D5', '#E973F5', '#237FEA',
+        '#F2B838', '#19EC5A', '#2395DE', '#D4B57F', '#FFD700'];
     this.colorsAlreadySelected = [];
 
     this.getRandomColor = function () {

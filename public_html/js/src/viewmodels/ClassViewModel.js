@@ -16,16 +16,22 @@ function ClassViewModel(name, description){
     self.purposesItServes = ko.observableArray();
 
     self.addNewPurpose = function(purpose){
+        purpose.addAssociatedClass(self);
         self.purposesItServes.push(purpose);
     };
     
     self.removePurpose = function(purpose){
+        purpose.removeClassFromAssociation(self);
         self.purposesItServes.remove(purpose);
     };
     
     self.purposesItDoesNotServe = function(){
         
         var purposesNotServing = ko.observableArray();
+        
+        if(self.system() === null){
+            return null;
+        }
         
         for(var s = 0; s < self.system().purposes().length; s++){
             if(self.purposesItServes().indexOf(self.system().purposes()[s]) === -1){
@@ -51,6 +57,11 @@ function ClassViewModel(name, description){
     self.patternsImplementing = ko.observableArray();
     
     self.patternsItDoesNotImplement = function(){
+        
+        if(self.system() === null){
+            return null;
+        }
+        
         var purposesNotServing = ko.observableArray();
         
         for(var s = 0; s < self.system().application().defaultDesignPatterns().length; s++){
@@ -90,5 +101,11 @@ function ClassViewModel(name, description){
         openClassEditTab(this);
        
     };
+    
+    self.removeSelfFromSystem = function(){
+        if(self.system() != null){
+            self.system().removeClass(self);
+        }
+    }
     
 }

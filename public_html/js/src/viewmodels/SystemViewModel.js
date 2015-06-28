@@ -11,8 +11,7 @@ function SystemViewModel(name, description, subSystemOf){
     
     this.id = Date.now();
     
-    self.systemRenderer = new SystemRenderer();
-    self.systemRenderer.loadSystemToRender(self);
+    
     
     //if the system is a sub system of another system, this is the system it is a subsystem of. XD
     //MAKE THIS AN OBSERVABLE
@@ -27,6 +26,8 @@ function SystemViewModel(name, description, subSystemOf){
     
     this.classesAssociated = ko.observableArray();
     
+    self.systemRenderer = new SystemRenderer();
+    self.systemRenderer.loadSystemToRender(self);
     
     /**
      * Creates a new class object and adds it to the system and then
@@ -68,6 +69,7 @@ function SystemViewModel(name, description, subSystemOf){
     
     this.addNewPurpose = function(){
         this.purposes.push( new PurposeViewModel() );
+        this.purposes()[this.purposes().length-1].system(this);
         openPurposeEditTab(this.purposes()[this.purposes().length-1]);
     };
     
@@ -101,9 +103,143 @@ function SystemViewModel(name, description, subSystemOf){
        
     };
     
+
+    
     this.closeTab = function(){
         closeTab(this.id);
     };
+    
+    
+    /**
+     * Removes itself from it's parent system if it has one.
+     * 
+     * @returns {undefined}
+     */
+    self.removeSelfFromSystem = function(){
+        if(self.subsystemOf != null){
+            this.subsystemOf.removeSubSystem(this);
+        }
+    }
+    
+    /**
+     * 
+     * @param {SystemViewModel} subsystem The subsystem to remove.
+     * @returns {undefined}
+     */
+    self.removeSubSystem = function(subsystemToRemove){
+        
+        var indexOfSubsystem = self.subSystems.indexOf(subsystemToRemove);
+        for(var i = 0; i < self.subSystems().length; i ++){
+            //console.log(self.subSystems()[i].id);
+        }
+        
+        //if we even contain the subsystem.
+        if(indexOfSubsystem !== -1){
+            
+            //make sure the subsystem still doesn't think we're out parent.
+            self.subSystems()[indexOfSubsystem].subsystemOf = null;
+            
+            //remove the subsystem
+            self.subSystems.remove(subsystemToRemove);
+            
+            //reflect changes
+            self.updateRenderer();
+            
+        } 
+        
+    }
+    
+    self.removeClass = function(classToRemove){
+        
+        var indexOfClass = self.classesAssociated.indexOf(classToRemove);
+
+        //if we even contain the subsystem.
+        if(indexOfClass !== -1){
+            
+            //make sure the class still doesn't think we're out parent.
+            self.classesAssociated()[indexOfClass].system(null);
+            
+            //remove the subsystem
+            self.classesAssociated.remove(classToRemove);
+            
+            //reflect changes
+            self.updateRenderer();
+            
+        } 
+        
+    }
+    
+    self.removePurpose = function(purposesToRemove){
+        
+        var indexOfClass = self.purposes.indexOf(purposesToRemove);
+
+        //if we even contain the subsystem.
+        if(indexOfClass !== -1){
+            
+            //make sure the class still doesn't think we're out parent.
+            self.purposes()[indexOfClass].system(null);
+            
+            //remove the subsystem
+            self.purposes.remove(purposesToRemove);
+            
+        } 
+        
+    }
+    
+    /**
+     * Searches though every property that contains an ID (purposes, classes, subsystems)
+     * and if the ID matches than it calls the appropriate open tab function in 
+     * tab manager.
+     * 
+     * @param {type} id
+     * @returns {undefined}
+     */
+    self.openInTabsByID = function(id){
+        
+        //do we have the id?
+        if(self.id === parseInt(id)){
+            self.openInTabs();
+            return;
+        } else {
+            console.log(self.id + " != "+id);
+        }
+        
+        
+        //search puposes for id
+        for(var i = 0; i < this.purposes().length; i ++){
+            
+            //see if purposes contains the correct ID
+            if(this.purposes()[i].id === parseInt(id)){
+                this.purposes()[i].openInTabs();
+                return;
+            }
+        
+        }
+        
+        //search classes for id
+        for(var i = 0; i < this.classesAssociated().length; i ++){
+            
+            //see if purposes contains the correct ID
+            if(this.classesAssociated()[i].id === parseInt(id)){
+                this.classesAssociated()[i].openInTabs();
+                return;
+            }
+        
+        }
+        
+        //search subsystems
+        for(var i = 0; i < this.subSystems().length; i ++){
+            
+            //see if purposes contains the correct ID
+            if(this.subSystems()[i].id === parseInt(id)){
+                this.subSystems()[i].openInTabs();
+                return;
+            }
+        
+        }
+        
+        console.log("Couldn't find anyone");
+    }
     
     self.updateRenderer = function(){
         

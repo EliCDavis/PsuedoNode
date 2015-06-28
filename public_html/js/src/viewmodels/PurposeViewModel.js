@@ -13,6 +13,33 @@ function PurposeViewModel(){
     self.name = ko.observable("Purpose");
     self.description = ko.observable("Description");
     
+    //@! make systems set seystem variable when creating a purpose
+    self.system = ko.observable();
+    
+    
+    self.classesAssociated = ko.observableArray();
+    
+    /**
+     * Adds a class to the purpose so it know's it's associated with that class.
+     * 
+     * @param {type} classToAdd
+     * @returns {undefined}
+     */
+    self.addAssociatedClass = function(classToAdd){
+        
+        //make sure they are trying to add a class that isn't null and we don't already have
+        if(classToAdd != null && self.classesAssociated.indexOf(classToAdd) === -1){
+           self.classesAssociated.push(classToAdd); 
+        } 
+    }
+    
+    self.removeClassFromAssociation = function(classToRemove){
+        //make sure they are trying to remove a class that isn't null and we actually have
+        if(classToRemove != null && self.classesAssociated.indexOf(classToRemove) !== -1){
+           self.classesAssociated.remove(classToRemove); 
+        }
+    }
+    
     self.closeTab = function(){
         closeTab(self.id);
     }
@@ -20,5 +47,13 @@ function PurposeViewModel(){
     self.openInTabs = function(){
         openPurposeEditTab(self);
     };
+    
+    self.removeSelfFromSystem = function(){
+        if(self.system() != null){
+            self.system().removePurpose(self);
+        }
+    };
+    
+    
     
 }

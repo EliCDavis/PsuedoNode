@@ -103,14 +103,46 @@ function SystemRenderer() {
         canvas.addEventListener('mousemove', function (e) {
             self.updateDrag(e);
         });
-
         canvas.addEventListener('mousewheel', function (e) {
             self.mousewheelCalled(e);
+        });
+        canvas.addEventListener('dblclick',function(e){
+            self.doubleClickCalled(e);
         });
 
         this.renderSystem();
 
     };
+
+
+    /**
+     * 
+     * 
+     * @param {type} e the mouse event received from the double click event
+     * @returns {undefined}
+     */
+    this.doubleClickCalled = function (e){
+        
+        var nodes = this.getAllNodes(this.testNodes);
+        for (var i = 0; i < nodes.length; i++) {
+
+            var pos = this.getPositionToZoomPosition(nodes[i].position);
+            var endPos = this.getPositionToZoomPosition([nodes[i].position[0] + nodes[i].size[0], nodes[i].position[1] + nodes[i].size[1]])
+
+            //determined if node got clicked.
+            if (e.offsetX >= pos[0] && e.offsetX <= endPos[0] &&
+                    e.offsetY >= pos[1] && e.offsetY <= endPos[1]) { // if within bounds
+                                
+                console.log("Node we're opening opentab for: "+nodes[i].id);
+                
+                this.systemToRender.openInTabsByID(nodes[i].id);
+                
+                return;
+            }
+        }
+        
+    }
+
 
     this.mousewheelCalled = function (e) {
         this.curZoom += (e.deltaY / 100) * -1;
@@ -137,8 +169,6 @@ function SystemRenderer() {
             }
         }
 
-
-
     };
 
 
@@ -159,6 +189,8 @@ function SystemRenderer() {
             self.nodeDragging.position = this.getZoomPositionToRegular([e.offsetX - self.positionOnNodeDragging[0], 
                 e.offsetY - self.positionOnNodeDragging[1]]);
         }
+        self.displayNodeNameUpdate(e);
+        
     };
 
     this.loadSystemToRender = function (system) {
@@ -175,6 +207,44 @@ function SystemRenderer() {
         this.colorSelector = new ColorSelector();
 
         this.testNodes = newNodes;
+    };
+    
+    /**
+     * When a user mouses over a node, we want to display it's name for a certain period of time.
+     * This shows the time of the last mouse over of a node.
+     */
+    self.lastNameDisplayUpdate = -1;
+    
+    /**
+     * The name we want to display for hovering over a node.
+     */
+    self.nameToBeDisplaying = "";
+    
+    /**
+     * We want to display the name of the node whenever we mouse over it
+     * for the sake of convienience.
+     * 
+     * @param {type} e The mouse drag event
+     * @returns {undefined}
+     */
+    self.displayNodeNameUpdate = function(e){
+        
+        var nodes = this.getAllNodes(this.testNodes);
+        for (var i = 0; i < nodes.length; i++) {
+
+            var pos = this.getPositionToZoomPosition(nodes[i].position);
+            var endPos = this.getPositionToZoomPosition([nodes[i].position[0] + nodes[i].size[0], nodes[i].position[1] + nodes[i].size[1]])
+
+            //determined if node got clicked.
+            if (e.offsetX >= pos[0] && e.offsetX <= endPos[0] &&
+                    e.offsetY >= pos[1] && e.offsetY <= endPos[1]) { // if within bounds
+                
+                self.nameToBeDisplaying = nodes[i].name;
+                self.lastNameDisplayUpdate = Date.now();
+                
+                return;
+            }
+        }
     };
 
     /**
@@ -266,6 +336,25 @@ function SystemRenderer() {
 
 
     /**
+     * When a user mouses over a node let's give them some information of that node
+     * in a friendely not in your face manor.
+     * 
+     * @param {type} ctx Context of the canvas we will be drawing too.
+     * @returns {undefined}
+     */
+    self.drawNodePreviewDisplay = function(ctx){
+        
+        if(Date.now() - self.lastNameDisplayUpdate > 1000){
+            return;
+        }
+        
+        ctx.beginPath();
+        ctx.fillStyle = 'black';
+        ctx.font = "12px Georgia";
+        ctx.fillText(self.nameToBeDisplaying(),10,20);
+    }
+
+    /**
      * Simulates different forces nodes emit on eachother.  Children want to be close to their parent
      * All nodes want to keep a certain distance from eachother.
      * Based on node distance we determine their next frames position.
@@ -300,7 +389,6 @@ function SystemRenderer() {
                             nodeIsParent = true;
                         }
                     }
-
 
 
                     //actual center position of node
@@ -395,23 +483,25 @@ function SystemRenderer() {
         this.gravitate();
 
         var ctx = this.canvas.getContext('2d');
-
+        
+        //drawing border
         ctx.beginPath();
         ctx.rect(0, 0, this.canvas.width, this.canvas.height);
         ctx.fillStyle = 'Black';
         ctx.fill();
-
         ctx.beginPath();
         ctx.rect(1, 1, this.canvas.width - 2, this.canvas.height - 2);
         ctx.fillStyle = 'White';
         ctx.fill();
 
+        //drawing all nodes.
         for (var i = 0; i < this.testNodes.nodes.length; i++) {
             this.drawNode(ctx, this.testNodes.nodes[i]);
         }
 
-        //window.requestAnimationFrame(this.renderSystem());
+        self.drawNodePreviewDisplay(ctx);
 
+        //window.requestAnimationFrame(this.renderSystem());
     };
 
     /**
@@ -429,8 +519,6 @@ function SystemRenderer() {
             return;
         }
 
-
-
         //draw lines linking to other aspects of the program ( class referencing another class in a method )
 
         for (var i = 0; i < nodeToDraw.children.length; i++) {
@@ -441,7 +529,7 @@ function SystemRenderer() {
             var endingPos = this.getPositionToZoomPosition([nodeToDraw.children[i].position[0] + (nodeToDraw.children[i].size[0] / 2), nodeToDraw.children[i].position[1] + (nodeToDraw.children[i].size[1] / 2)]);
             ctx.moveTo(startingPos[0], startingPos[1]);
             ctx.lineTo(endingPos[0], endingPos[1]);
-            ctx.lineWidth = 1;
+            ctx.lineWidth = 2;
             ctx.strokeStyle = "Black";
             ctx.stroke();
 
@@ -540,8 +628,6 @@ function SystemRenderer() {
         position[0] -= (newWidth - originalWidth) / 2;
         position[1] -= (newHeight - originalHeight) / 2;
 
-        
-
         return position;
         
     }
@@ -584,7 +670,7 @@ function ColorSelector() {
         }
 
         return this.colorsForSelection[index];
-    }
+    };
 
 
     this.getBorder = function (curColor) {

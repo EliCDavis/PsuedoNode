@@ -104,6 +104,12 @@ function openPurposeEditTab(purposeView){
         tabContentHtml += "<input type='text' class='form-control' data-bind='value: name'></input></div>";
         tabContentHtml += "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Purpose'></textarea><br>";
         
+        tabContentHtml += "<h4>Classes Associated:</h4>";
+        
+        tabContentHtml += "<div data-bind='foreach: classesAssociated'>";
+        tabContentHtml += this.smallViewButton()+"<span data-bind='text: name()'></span><br>";
+        tabContentHtml += "</div>";
+        
         tabContentHtml+= "</div>";
         tabContentHtml+= "</div>";
         
@@ -330,6 +336,9 @@ function openClassEditTab(classView){
 
         var viewButton = "<button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>"+
                              "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> </button>    ";
+                     
+        var removeSubsystemButton = "<button type='button' class='btn btn-default btn-xs' data-bind='click: removeSelfFromSystem'>"+
+                             "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>"
 
         var tabsContentParent = dom.byId("EditTabsContent");
         var tabContentHtml = "<br>";
@@ -344,12 +353,12 @@ function openClassEditTab(classView){
         tabContentHtml += "</div><div class='col-md-5'>";
         
         var addPurposeButton = "<button type='button' class='btn btn-default' data-bind='click: addNewPurpose'>"+
-                             "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </button>";
+                             "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button>";
                      
         tabContentHtml += "<h4>Purposes    "+addPurposeButton +"</h4>";
 
         tabContentHtml += "<ul data-bind='foreach: purposes'>";
-        tabContentHtml +="<li>"+viewButton+" <span data-bind='text: name'></span></li>";
+        tabContentHtml +="<li>"+removeSubsystemButton+viewButton+" <span data-bind='text: name'></span></li>";
         tabContentHtml += "</ul>";
         
         
@@ -358,11 +367,12 @@ function openClassEditTab(classView){
         tabContentHtml += "<div class='col-md-3'>";
         var addSubsystemButton = "<button type='button' class='btn btn-default' data-bind='click: addNewSubsystem'>"+
                              "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </button>";
+        
         tabContentHtml += "<h4>Subsystems    "+addSubsystemButton+"</h4>";
         
         
         tabContentHtml += "<dl data-bind='foreach: subSystems'>";
-        tabContentHtml += "<dt>"+viewButton+"<span data-bind='text: name(), click: openInTabs'></span></dt><dd data-bind='text: description()'></dd>";
+        tabContentHtml += "<dt>"+removeSubsystemButton+viewButton+"<span data-bind='text: name(), click: openInTabs'></span></dt><dd data-bind='text: description()'></dd>";
         
     
         tabContentHtml += "</div>";
@@ -402,7 +412,7 @@ function openClassEditTab(classView){
         tabContentHtml += "<h4>Classes   "+addClassButton+"</h4>";
         tabContentHtml += "<dl data-bind='foreach: classesAssociated'>";
         
-        tabContentHtml += "<dt>"+viewButton+" <span data-bind='text: name'></span></dt><dd data-bind='text: description'></dd>";
+        tabContentHtml += "<dt>"+removeSubsystemButton+viewButton+" <span data-bind='text: name'></span></dt><dd data-bind='text: description'></dd>";
         
         tabContentHtml += "</dl>";
         
@@ -429,5 +439,17 @@ function openClassEditTab(classView){
         });
 
     });
+    
+    
+    /**
+     * Recycled HTML for creating a small view button.  Put in with any view model that has the
+     * openInTabs() method defined.
+     * 
+     * @returns {String}
+     */
+    this.smallViewButton = function (){
+        return  "<button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>"+
+                             "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> </button>    ";
+    }
 
 }

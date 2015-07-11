@@ -7,7 +7,11 @@
 
 function ApplicationViewModel(){
     
-    this.namingConventions;
+    var self = this;
+    
+    self.id = 200;
+    
+    this.namingConventions = ko.observableArray([{property:"Global Vairables",value:"LIKE_THIS"},{property:"Private Methods",value:"_likeThis()"}]);
     this.caseConventions;
     
     //type SystemViewModel
@@ -15,6 +19,12 @@ function ApplicationViewModel(){
     
     //typeDesignPatternTemplateViewModel
     this.defaultDesignPatterns = ko.observableArray();
+    
+    self.createNewDesignPattern = function(){
+        var newPattern = new DesignPatternTemplateViewModel("Name","Description");
+        self.defaultDesignPatterns.push(newPattern);
+        newPattern.openInTabs()
+    }
     
     //http://www.oodesign.com/
     this.start = function (){
@@ -33,6 +43,7 @@ function ApplicationViewModel(){
 
         
         var singletonDesignPattern = new DesignPatternTemplateViewModel();
+        singletonDesignPattern.id += 10;
         singletonDesignPattern.setName("Singleton");
         singletonDesignPattern.setDescription("Ensure that only one instance of a class is created and Provide a global access point to the object");
         
@@ -43,6 +54,19 @@ function ApplicationViewModel(){
         singletonDesignPattern.methodsThatComeWithPattern.push(singletonMethod);
         this.defaultDesignPatterns.push(singletonDesignPattern);
 
+    };
+    
+    /**
+     * Closes the tab if it is currentely open
+     * 
+     * @returns {undefined}
+     */
+    this.closeTab = function(){
+        closeTab(self.id);
+    }
+
+    self.openInTabs = function(){
+        openApplicationSettingsTab(self);
     };
 
 }

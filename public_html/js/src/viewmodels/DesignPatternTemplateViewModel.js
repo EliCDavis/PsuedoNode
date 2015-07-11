@@ -5,22 +5,65 @@
  */
 
 
+/**
+ * Classes implement design patterns that aid in production and provide 
+ * solutions that have been solved in the past.  This can set up variables
+ * and methods in the class, or simply alter the description of the class.
+ * Design Patterns must be flexible so they can adapt to other's code.
+ * 
+ * @param {String} name name of the design pattern we want to create
+ * @param {String} description description of the design pattern we want to create
+ * @returns {undefined}
+ */
 function DesignPatternTemplateViewModel(name, description){
     
-    this.name = ko.observable(name);
-    this.setName = function(name){
-        this.name(name);
-    }
-    this.getName = function(){
-        return this.name();
+    var self = this;
+    
+    self.id = Date.now();
+    
+    self.name = ko.observable(name);
+    
+    self.setName = function(name){
+        self.name(name);
+    };
+    
+    self.getName = function(){
+        return self.name();
+    };
+    
+    self.description = ko.observable(description);
+    
+    self.setDescription = function(description){
+        self.description(description);
+    };
+    
+    
+    self.methodsThatComeWithPattern = ko.observableArray();
+    
+    self.addNewMethod = function(){
+        self.methodsThatComeWithPattern.push(new ObjectMethodViewModel());
     }
     
-    this.description = ko.observable(description);
-    this.setDescription = function(description){
-        this.description(description);
+    self.removeMethod = function(method){
+        
+        var indexOfMethod = self.methodsThatComeWithPattern().indexOf(method)
+        
+        if(indexOfMethod !== -1){
+            self.methodsThatComeWithPattern.remove(method);
+        }
     }
     
-    this.methodsThatComeWithPattern = ko.observableArray();
+    self.openInTabs = function(){
+        openDesignPattenEditTab(self);
+    }
     
+    /**
+     * Closes the settings tab if it is currentely open
+     * 
+     * @returns {undefined}
+     */
+    this.closeTab = function(){
+        closeTab(self.id);
+    }
     
 }

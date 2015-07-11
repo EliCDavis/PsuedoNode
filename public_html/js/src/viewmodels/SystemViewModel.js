@@ -11,7 +11,11 @@ function SystemViewModel(name, description, subSystemOf){
     
     this.id = Date.now();
     
-    
+    /**
+     * A system is normalyy defined as a directory, and all the files in that directory are classes.
+     * Any sub directories are sub systems.  At the moment I do not have any plans for changing how this works
+     */
+    self.rootFolderInProject = ko.observable();
     
     //if the system is a sub system of another system, this is the system it is a subsystem of. XD
     //MAKE THIS AN OBSERVABLE
@@ -184,6 +188,25 @@ function SystemViewModel(name, description, subSystemOf){
             
         } 
         
+    }
+    
+    /**
+     * Counts all of this systems subsystems and any subsystems of it's subsystems and so on
+     * Naturally recursive function.
+     * 
+     * @returns {int}
+     */
+    self.allSubsystemsCount = function(){
+        
+        var subsystemsFound =[];
+        
+        //iterate through all subsystems
+        for(var i = 0; i < self.subSystems().length; i ++){
+            
+            //iterate though all of subsystems found subsystems ;)
+            
+            subsystemsFound.push();
+        }
     }
     
     /**

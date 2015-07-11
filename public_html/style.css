@@ -8,12 +8,6 @@ and open the template in the editor.
     Author     : Eli
 */
 
-#SystemsWindow{
-    width: 20%;
-    margin: 1cm 1cm 1cm 1cm;
-    height: 88%;
-    position: absolute;
-}
 #NodeCanvas {
     background-color: #311440;
     /* width: 100%; */
@@ -26,6 +20,16 @@ and open the template in the editor.
     top: 0%;
     margin: 1cm 1cm 1cm 1cm;
     position: absolute;
+}
+
+#TabedContent{
+    width: 100%;
+}
+
+/*http://stackoverflow.com/questions/3148415/how-to-make-a-vertical-line-in-html*/
+.verticalLine {
+    padding: 3px;
+    /*border-right: thin solid #000000;*/
 }
 
 .dividerSpace{

@@ -1,0 +1,49 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jul 11, 2015, 2:56:49 AM
+    Author     : Eli
+*/
+
+/*http://stackoverflow.com/questions/19089384/twitter-bootstrap-3-two-columns-full-height*/
+/*html,body,.container
+{
+    height:100%;
+}
+.container
+{
+    display:table;
+    width: 100%;
+    margin-top: -50px;
+    padding: 50px 0 0 0; set left/right padding according to needs
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+header
+{
+    background: green;
+    height: 50px;
+}
+
+.row
+{
+    height: 100%;
+    display: table-row;
+}
+.col-md-3.no-float, .col-md-9.no-float {
+    float: none;  thanks baxabbit 
+}
+.col-md-3
+{
+    display: table-cell;
+    background: pink;
+}
+.col-md-9
+{
+    display: table-cell;
+    background: yellow;
+  	float: none;
+}*/

@@ -66,6 +66,199 @@ function TabManager(){
 }
 
 
+/**
+ * Opens the Pseudo Node Home tab by loading in html with jqeury
+ *   
+ * @param {type} homeViewModel
+ * @returns {undefined}
+ */
+function openHomeTab(homeViewModel){
+
+    if(tabManager.tabIsOpen(homeViewModel.id)){
+        activateTab(homeViewModel.id);
+        return;
+    } 
+    
+    var navTabHtml = "";
+    var closeButton = "<button type='button' class='btn btn-default btn-sm' data-bind='click: closeTab'>"+
+                         "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>";
+    var homeIcon = "<span class='glyphicon glyphicon-home' aria-hidden='true'></span>";
+    navTabHtml += "<a data-toggle='tab' href='#edit"+homeViewModel.id+"' >"+homeIcon+" <span>Home</span><span class='dividerSpace'></span>  "+closeButton+"</a>";
+    
+    var tabToggle = $('<li />',
+        {
+            'id':homeViewModel.id,
+            'html':navTabHtml
+        }    
+        ).appendTo('#EditTabs');
+
+    ko.applyBindings(homeViewModel, tabToggle[0]);
+    
+    var tabContent = $('<div />', {
+        "class": 'tab-pane fade',
+        'id':'edit'+homeViewModel.id
+    }).appendTo('#EditTabsContent').load("components/home_tab.html");
+    
+    tabManager.openNewTab(homeViewModel.id);
+    activateTab(homeViewModel.id);
+    
+}
+
+/**
+ * Design Patterns need a tab for editing.  Here is where you define what methods the 
+ * design pattern provides, pattern description, and can see statistics about the pattern.
+ * 
+ * @param {DesignPatternTemplateViewModel} designPattern
+ * @returns {undefined}
+ */
+function openDesignPattenEditTab(designPattern){
+    
+    if(tabManager.tabIsOpen(designPattern.id)){
+        activateTab(designPattern.id);
+        return;
+    } 
+    
+    var navTabHtml = "";
+    var closeButton = "<button type='button' class='btn btn-default btn-sm' data-bind='click: closeTab'>"+
+                        "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>";
+    var systemsIcon = "<span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>";
+    navTabHtml += "<a data-toggle='tab' href='#edit"+designPattern.id+"' >"+systemsIcon+" <span data-bind='text: name'></span><span class='dividerSpace'></span>  "+closeButton+"</a>";
+
+    var tabToggle = $('<li />',
+        {
+            'id':designPattern.id,
+            'html':navTabHtml
+        }    
+        ).appendTo('#EditTabs');
+        
+    tabToggle.ready(function(){
+        ko.applyBindings(designPattern, tabToggle[0]);
+    });
+
+    
+    var tabContent = $('<div />', {
+        "class": 'tab-pane fade',
+        'id':'edit'+designPattern.id
+    }).appendTo('#EditTabsContent').load("components/design_pattern_edit.html",function (){
+        ko.applyBindings(designPattern, tabContent[0]);
+    });
+    
+    
+    tabContent.ready(function(){
+        console.log(tabContent[0]);
+        tabManager.openNewTab(designPattern.id);
+        activateTab(designPattern.id);
+    });
+    
+}
+
+
+/**
+ * Opens the appplication settings tab up for editing things like the naming conventions of your
+ * project, different design patterns your using, etc.
+ * 
+ * This specific tab will have ID of 2
+ * 
+ * @param {ApplicationViewModel} appView The settings view model we want to open the tab for.
+ * Any changes made in the tab are reflected in the view model
+ * @returns {undefined}
+ */
+function openApplicationSettingsTab(appView){
+    
+    var applicationSettingsTabID = appView.id;
+    
+    if(tabManager.tabIsOpen(applicationSettingsTabID)){
+        activateTab(applicationSettingsTabID);
+        return;
+    } 
+    
+    require([
+       "dojo/dom", 
+       "dojo/dom-construct",
+       "dojo/domReady!"
+    ], function(dom, domConstruct){
+        
+        var tabsParent = dom.byId("EditTabs");
+        var navTabHtml = "";
+        var closeButton = "<button type='button' class='btn btn-default btn-sm' data-bind='click: closeTab'>"+
+                             "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>";
+        var systemsIcon = "<span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>";
+        navTabHtml += "<a data-toggle='tab' href='#edit"+applicationSettingsTabID+"' >"+systemsIcon+" <span>Settings</span><span class='dividerSpace'></span>  "+closeButton+"</a>";
+        var tabsNode = domConstruct.create('li' , {  innerHTML:  navTabHtml, id: applicationSettingsTabID}, tabsParent);
+        
+        $(tabsNode).ready(function() {
+            ko.applyBindings(appView, tabsNode);
+        });
+        
+        var tabsContentParent = dom.byId("EditTabsContent");
+        var tabContentHtml = "<br>";
+        tabContentHtml+= "<div class='row'>";
+        
+            tabContentHtml+= "<div class='col-xs-12 col-sm-6 col-md-4'>";
+                tabContentHtml+= "<h2>Project Settings</h2>";
+            tabContentHtml+='</div>';
+        tabContentHtml+='</div>';
+
+        tabContentHtml+= "<div class='row'>";
+
+            tabContentHtml+= "<div class='col-xs-12 col-sm-6 col-md-4'>";
+                tabContentHtml+= "<h3>Repo In Use:</h3>";
+            tabContentHtml+= "</div>";
+
+            //All the root systems defined within the system.
+            tabContentHtml+= "<div class='col-xs-12 col-sm-6 col-md-4'>";
+
+                tabContentHtml+= "<h3>"+this.addNewButton('')+"Defined Root Systems</h3>";
+                tabContentHtml+= "<div data-bind='foreach: rootSystems'>";
+                    tabContentHtml+= "<h4 data-bind='text: name'></h4>";
+                    tabContentHtml+= "Root Directory: <span data-bind='text: rootFolderInProject'></span><br>";
+                tabContentHtml+= "</div>";
+
+            tabContentHtml+= "</div>";
+
+            tabContentHtml+= "<div class='col-xs-12 col-sm-6 col-md-4'>";
+
+                tabContentHtml+= "<h3>Programming Standards<small>You wish</small></h3>";
+                tabContentHtml+= "Define programming standards here and pray that you and others will actually follow them";
+
+                tabContentHtml+= "<h4>Naming Conventions:</h4>";
+                tabContentHtml+= "Have clicking edit on naming conventions open a modal";
+                tabContentHtml+= "<div data-bind='foreach: namingConventions'>";
+                    
+                    tabContentHtml += '<div class="input-group">';
+                    tabContentHtml += '<div class="input-group-addon" data-bind="text: property"></div>';
+                    tabContentHtml += "<input type='text' class='form-control' data-bind='value: value'></input></div>";
+                        
+                tabContentHtml += "</div>";
+                
+                tabContentHtml+= "<h4>"+this.addNewButton('createNewDesignPattern')+"Design Patterns</h4>";
+
+                tabContentHtml+= "<div data-bind='foreach: defaultDesignPatterns'>";
+                    tabContentHtml+= this.smallViewButton()+"<span data-bind='text: name'></span><br>";
+                tabContentHtml+= "</div>";
+
+            tabContentHtml+= "</div>";
+        
+        tabContentHtml+= '</div>';
+        
+        var contentNode = domConstruct.create('div' , 
+                {  
+                    innerHTML:  tabContentHtml,
+                    class: 'tab-pane fade',
+                    id: "edit"+applicationSettingsTabID
+                }, 
+                tabsContentParent);
+
+        $(contentNode).ready(function() {
+            ko.applyBindings(appView, contentNode);
+            tabManager.openNewTab(applicationSettingsTabID);
+            activateTab(applicationSettingsTabID);
+        });
+        
+    });
+    
+}
+
 function openPurposeEditTab(purposeView){
     
     if(tabManager.tabIsOpen(purposeView.id)){
@@ -387,8 +580,6 @@ function openClassEditTab(classView){
 
         tabContentHtml += "<div class='col-xs-12 col-md-3'>";
         
-        
-        
         var addClassButton =  "<div class='btn-group'>";
         addClassButton+= "<button type='button' class='btn btn-default' data-bind='click: addNewClass' >"+
                          "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span> </button>";
@@ -439,17 +630,41 @@ function openClassEditTab(classView){
         });
 
     });
-    
-    
-    /**
-     * Recycled HTML for creating a small view button.  Put in with any view model that has the
-     * openInTabs() method defined.
-     * 
-     * @returns {String}
-     */
-    this.smallViewButton = function (){
-        return  "<button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>"+
-                             "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> </button>    ";
-    }
 
+}
+
+/**
+* Recycled HTML for creating a small view button.  Put in with any view model that has the
+* openInTabs() method defined.
+* 
+* @returns {String}
+*/
+this.smallViewButton = function (){
+   return  "<button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>"+
+                        "<span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> </button>    ";
+}
+
+/**
+ * Recycles HTML for creating Input for a name and description of an object.
+ * Should only be used when the view model being data-bound has a name and description, obviously
+ * 
+ * @returns {String} Html that forms name and description boxes seen in most classes.
+ */
+this.nameAndDescription = function(){
+    return '<div class="input-group">'+
+            '<div class="input-group-addon">Name</div>'+
+             "<input type='text' class='form-control' data-bind='value: name'></input></div>"+
+              "<textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description'></textarea><br>";
+}
+
+/**
+ * Recycled HTML for creating add buttons.
+ * It's simply an add button. Call whatever method you want with it.
+ * 
+ * @param {type} dataBoundName The data-bound method name you want to call
+ * @returns {String}
+ */
+this.addNewButton = function(dataBoundName){
+    return "<button type='button' class='btn btn-default' data-bind='click: "+dataBoundName+"'>"+
+                             "<span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span></button>";
 }

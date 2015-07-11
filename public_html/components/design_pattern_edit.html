@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<div>
+    <br>
+    <div class='container-fluid'>
+        <div class='row'>
+
+            <div class='col-xs-12 col-sm-6 col-md-4'>
+                <h4>Basic Info</h4>
+
+                <div class="input-group">
+                    <div class="input-group-addon">Name</div>
+                    <input type='text' class='form-control' data-bind='value: name'>
+                </div>
+                <textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description'>
+                </textarea><br>
+
+            </div>
+
+            <div class='col-md-8 col-sm-12' >
+                
+                <h4>
+                    <button type='button' class='btn btn-default btn-sm' data-bind='click: addNewMethod'>
+                        <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span>
+                    </button>
+                    Methods
+                </h4>
+                
+                <div class='row'>
+                    
+                    <div data-bind="foreach: methodsThatComeWithPattern">
+                        
+                        <div class="col-md-4 col-sm-6 col-xs-12">
+                        
+                            <div class="panel panel-default">
+
+                                <div class="panel-heading">
+                                    <h3 class="panel-title" >
+                                        
+                                        <button type='button' class='btn btn-default btn-sm' data-bind='click: $parent.removeMethod'>
+                                            <span class='glyphicon glyphicon-minus-sign' aria-hidden='true'></span>
+                                        </button>
+                                        
+                                        <span data-bind="text:name"></span>
+                                    </h3>
+                                </div>
+
+                                <div class="panel-body">
+                                    <div class="input-group">
+                                        <div class="input-group-addon">Name</div>
+                                        <input type='text' class='form-control' data-bind='value: name'>
+                                    </div>
+                                    <textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description'>
+                                    </textarea><br>
+                                </div>
+
+                            </div>
+                            
+                        </div>
+                    </div>
+                
+                </div>
+                
+            </div>
+
+        </div>
+    </div>
+</div>

@@ -109,6 +109,7 @@ function SystemRenderer() {
         canvas.addEventListener('dblclick',function(e){
             self.doubleClickCalled(e);
         });
+        
 
         this.renderSystem();
 
@@ -339,20 +340,34 @@ function SystemRenderer() {
      * When a user mouses over a node let's give them some information of that node
      * in a friendely not in your face manor.
      * 
-     * @param {type} ctx Context of the canvas we will be drawing too.
+     * @param {Canvas.context} ctx Context of the canvas we will be drawing too.
      * @returns {undefined}
      */
     self.drawNodePreviewDisplay = function(ctx){
         
+        //have we timed out?
         if(Date.now() - self.lastNameDisplayUpdate > 1000){
             return;
         }
         
+        //set our font before we try seeing how much space it'll take up
+        ctx.font = "12px Georgia";
+        
+        var widthOfName = ctx.measureText(self.nameToBeDisplaying()).width;
+        
+        //draw border around text
+        ctx.beginPath();
+        ctx.rect(5, 5, widthOfName+10, 22);
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+        ctx.fill();
+        
+        //display the name
         ctx.beginPath();
         ctx.fillStyle = 'black';
-        ctx.font = "12px Georgia";
+        
         ctx.fillText(self.nameToBeDisplaying(),10,20);
-    }
+    };
+
 
     /**
      * Simulates different forces nodes emit on eachother.  Children want to be close to their parent
@@ -594,7 +609,7 @@ function SystemRenderer() {
         position[1] = (position[1] / newHeight) * originalHeight;
 
         return position;
-    }
+    };
     
     this.getZoomPositionToRegular = function(positionArg){
         
@@ -630,7 +645,7 @@ function SystemRenderer() {
 
         return position;
         
-    }
+    };
 
 }
 

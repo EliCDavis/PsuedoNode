@@ -13,11 +13,13 @@ and open the template in the editor.
         <script src="js/libs/dojo/dojo.js"></script>
         <script src = "js/libs/noeldelgado_Values.js_master_index.js"></script><!--Shading and Lightening Colors-->
         
-<!--        <script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>-->
+        <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>-->
         
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
         <link href="js/libs/twitter-bootstrap/css/bootstrap.css" rel="stylesheet">
+        <link href="nofloat.css" rel="stylesheet">
         
+        <script src="js/src/viewmodels/HomeViewModel.js"></script>
         <script src="js/src/viewmodels/SystemViewModel.js"></script>
         <script src="js/src/viewmodels/ApplicationViewModel.js"></script>
         <script src="js/src/viewmodels/ClassViewModel.js"></script>
@@ -39,90 +41,93 @@ and open the template in the editor.
         </title>
         
     </head>
+    
     <body class="claro">
       
-        <div id="application">
+        <div id="application" style="padding: 20px 20px 20px 20px">
             
-            <div id="EditWindow" class="panel panel-primary">
-                <div class="panel-heading">
-                <h3 class="panel-title">Edit</h3>
-                </div>
+            <div class="container-fluid">
+            
+                <div class ="row">
 
-                <div style="overflow: auto;" id = "EditHolder" class="panel-body">
-                    
-                    <ul class="nav nav-tabs" data-tabs="tabs" id="EditTabs">
-                        <li class="active">
-                            <a data-toggle='tab' href="#home">
+                    <div class="col-md-3  no-float verticalLine" id="SideBar">
+                        <br>
+                        <h3>Pseudo Node
+
+                            <!--Settings Tab-->
+                            <button type='button' class='btn btn-default btn-sm' data-bind='click: openInTabs'>
+                                <span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>
+                            </button>
+                            
+                            <!--Home Button-->
+                            <button type='button' class='btn btn-default btn-sm' onclick="openOurHomeTab()">
                                 <span class='glyphicon glyphicon-home' aria-hidden='true'></span>
-                                Home
-                                <span class='divider'></span>
-                                <button type='button' class='btn btn-default btn-sm'>
-                                    <span class='glyphicon glyphicon-remove' aria-hidden='true'></span>
-                                </button>
-                            </a>
-                        </li>
-                    </ul>
+                            </button>
+                            
+                        </h3>
+                        
+                        <div style="height:100%">
+                            
+                            <div id="SystemsSelection"></div>
 
-                    <div class="tab-content" id="EditTabsContent">
-                        <div id="home"  class="tab-pane fade in active">
-                            <div class="row">
-                                <div class='col-xs-12 col-sm-6 col-md-4'>
-                                    <h3>Pseudo Node:</h3>
+                            <div data-bind="foreach: rootSystems">
+                                
+                                <div class="panel panel-default">
+                                    
+                                    <div class="panel-heading">
+                                        <h3 class="panel-title" data-bind="text: name"></h3>
+                                    </div>
+                                    
+                                    <div class="panel-body">
+                                        
+                                        <button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>
+                                            <span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> 
+                                        </button>
+                                        
+                                        <span class='glyphicon glyphicon-file' aria-hidden='true'></span> 
+                                        <span data-bind='text: classesAssociated().length'></span>
+                                        
+                                        <span class='glyphicon glyphicon-align-left' aria-hidden='true'></span>
+                                        <span data-bind='text: subSystems().length'></span>
+                                        
+                                        <span class='glyphicon glyphicon-star-empty' aria-hidden='true'></span>
+                                        <span data-bind='text: purposes().length'></span>
+                                        
+                                        <h4>Description</h4>
+                                        <p data-bind="text: description"></p>
+                                        
+                                    </div>
+                                    
                                 </div>
-                                <div class='col-xs-12 col-sm-6 col-md-4'>
-                                    <h3></h3>
-                                </div>
-                                <div class='col-xs-12 col-sm-6 col-md-4'>
-                                    <h3>Log in to Github</h3>
-                                    <label for="exampleInputName2">Username</label>
-                                    <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
-                                    <label for="exampleInputPassword1">Password</label>
-                                    <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-                                     <button class="btn btn-default">Sign in</button>
-                                </div>
+                                
                             </div>
-                            <div class="row">
-                                <div class='col-sm-12 col-md-6'>
-                                    <h3>About:</h3>
-                                </div>
-                                <div class='col-sm-12 col-md-6'>
-                                    <h3>Recent Updates:</h3>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class='col-xs-12 col-sm-6 col-md-4'>
-                                    <h3>Technologies Used:</h3>
-                                    <ul>
-                                        <li>Knockout.js</li>
-                                        <li>Bootstrap</li>
-                                        <li>Dojo (or tried to)</li>
-                                        <li>jquery</li>
-                                    </ul>
-                                </div>
-                                <div class='col-xs-12 col-sm-6 col-md-4'>
-                                    <h3>About:</h3>
-                                </div>
-                                <div class='col-xs-12 col-sm-6 col-md-4'>
-                                    <h3>About:</h3>
-                                </div>
-                            </div>
+                            
                         </div>
+                            
+                        
                     </div>
-                </div>
-            </div>
-            
-            <div id="SystemsWindow" class="panel panel-primary">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Pseudo Node</h3>
+                    
+                    
+                    <div class="col-md-9 no-float">
+                        <br>
+                        <div id="TabedContent">
+                            
+                            <ul class="nav nav-tabs" data-tabs="tabs" id="EditTabs">
+
+                            </ul>
+
+                            <div class="tab-content" id="EditTabsContent">
+
+                            </div>
+                               
+                        </div>
+                            
+                    </div>
+                
                 </div>
 
-                <div id="SystemsSelection"></div>
-                
-                <div style="overflow: auto; " id = "SystemHolder" class="panel-body"></div>
             </div>
-            
-            
-            
+                
         </div>
       
         <script>
@@ -130,6 +135,8 @@ and open the template in the editor.
             jQuery(document).ready(function ($) {
                 $('#tabs').tab();
             });
+           
+            var homeViewModel = new HomeViewModel();
            
             var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see"); 
             
@@ -140,9 +147,6 @@ and open the template in the editor.
             
             applicationsViewModel.start();
            
-            openSystemEditTab(applicationsViewModel.rootSystems()[0]);
-
-            
             function canvasUpdate(){    
                 
                 for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
@@ -163,13 +167,19 @@ and open the template in the editor.
                 }
                 
             }
-            
+           
+           function openOurHomeTab(){
+               homeViewModel.openInTabs()
+           }
+           
+           openOurHomeTab();
+    
             window.requestAnimationFrame(canvasUpdate);
             
+            ko.applyBindings(applicationsViewModel,document.getElementById("SideBar"))
             
             //Don't put anything after this if your offline, will throw errors and nothing else will get executed
-            CreateSystemsWindow();
-            
+            //CreateSystemsWindow();
             
             function createLayout(){
                  require([
@@ -217,12 +227,7 @@ and open the template in the editor.
             }
             
             
-           
-            
-           
-           
-            
-            
+
             function CreateSystemsWindow(){
             
                 // Require dependencies
@@ -340,10 +345,8 @@ and open the template in the editor.
                     }
                });
                
-               
-               
-               
             }
+            
         </script>
     </body>
 </html>

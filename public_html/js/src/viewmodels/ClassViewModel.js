@@ -11,7 +11,12 @@ function ClassViewModel(name, description){
     
     self.id = Date.now();
     
-    self.name = ko.observable(name );
+    self.name = ko.observable(name);
+    
+    /**
+     * The programming language the class is written in.
+     */
+    self.programmingLanguage = ko.observable();
     
     self.purposesItServes = ko.observableArray();
 

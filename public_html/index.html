@@ -13,6 +13,9 @@ and open the template in the editor.
         <script src="js/libs/dojo/dojo.js"></script>
         <script src = "js/libs/noeldelgado_Values.js_master_index.js"></script><!--Shading and Lightening Colors-->
         
+        <script src="js/libs/underscore-min.js"></script>
+        <script src ="js/libs/github.js"></script>
+        
         <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>-->
         
         <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
@@ -21,12 +24,14 @@ and open the template in the editor.
         
         <script src="js/src/viewmodels/HomeViewModel.js"></script>
         <script src="js/src/viewmodels/SystemViewModel.js"></script>
+        <script src="js/src/GithubHandler.js"></script>
         <script src="js/src/viewmodels/ApplicationViewModel.js"></script>
         <script src="js/src/viewmodels/ClassViewModel.js"></script>
         <script src="js/src/viewmodels/PurposeViewModel.js"></script>
         <script src="js/src/viewmodels/ObjectMethodViewModel.js"></script>
         <script src ="js/src/viewmodels/DesignPatternTemplateViewModel.js"></script>
         <script src="js/src/Canvas/SystemRender.js"></script>
+        <script src ="js/src/viewmodels/GitHubUserViewModel.js"></script>
         
         <script src="js/src/TabManager.js"></script>
         
@@ -53,7 +58,6 @@ and open the template in the editor.
                     <div class="col-md-3  no-float verticalLine" id="SideBar">
                         <br>
                         <h3>Pseudo Node
-
                             <!--Settings Tab-->
                             <button type='button' class='btn btn-default btn-sm' data-bind='click: openInTabs'>
                                 <span class='glyphicon glyphicon-wrench' aria-hidden='true'></span>

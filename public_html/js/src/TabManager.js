@@ -202,7 +202,34 @@ function openApplicationSettingsTab(appView){
         tabContentHtml+= "<div class='row'>";
 
             tabContentHtml+= "<div class='col-xs-12 col-sm-6 col-md-4'>";
-                tabContentHtml+= "<h3>Repo In Use:</h3>";
+                tabContentHtml += "<h3>Logged In As:</h3>";
+                //tabContentHtml += "<img data-bind='attr: { src: githubUserViewModel().profilePicURL }'>";
+                tabContentHtml += '<div class="media">\
+                            <div class="media-left">\
+                              <a data-bind="attr: { href: githubUserViewModel().profileUrl }">\
+                                <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: githubUserViewModel().profilePicURL }" style="width:64px; height:64px;">\
+                              </a>\
+                            </div>\
+                            <div class="media-body">\
+                              <h4 class="media-heading" data-bind="text: githubUserViewModel().displayName"></h4>\
+                              <p></p>\
+                            </div>\
+                          </div>';
+                
+                //tabContentHtml += "<h4 data-bind='text: githubUserViewModel().displayName'></h4>";
+                
+                tabContentHtml += "<h3>Repo In Use:</h3>";
+                
+                var loadrepoButton =  "<button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.loadRepo'>"+
+                        "<span class='glyphicon glyphicon-import' aria-hidden='true'></span> </button>    ";
+                
+                tabContentHtml += "<h3>List of Repos:</h3>";
+                tabContentHtml += "<div data-bind='foreach: usersRepos'>";
+                    tabContentHtml += "<h4>"+loadrepoButton+"<span data-bind='text: name'></span></h4>";
+                    tabContentHtml += "<p data-bind='text: description'></p>";
+                tabContentHtml += "</div>";
+            
+                
             tabContentHtml+= "</div>";
 
             //All the root systems defined within the system.
@@ -536,6 +563,8 @@ function openClassEditTab(classView){
         var tabsContentParent = dom.byId("EditTabsContent");
         var tabContentHtml = "<br>";
         tabContentHtml += "<div class='row'><div class='col-md-4'>";
+
+        
 
         tabContentHtml += "<h4>Basic Info:</h4>";
         tabContentHtml += '<div class="input-group">';

@@ -11,6 +11,35 @@ function ApplicationViewModel(){
     
     self.id = 200;
     
+    /**
+     * GitHubUserViewModel
+     */
+    self.githubUserViewModel = ko.observable();
+    
+    
+    
+    /**
+     * In an attempt to seperate functionality from the interface, we have a handler meant for interfacing 
+     * with our Github object
+     */
+    self.githubHandler;
+    
+    
+    /**
+     * Sets the github obj 
+     * @param {type} reference
+     * @returns {undefined}
+     */
+    self.setGithubReference = function(reference, username){
+        self.githubHandler = new GithubHandler(reference, username);
+        
+        self.loadGithubUser();
+    }
+    
+    
+    
+    self.usersRepos = ko.observableArray();
+    
     this.namingConventions = ko.observableArray([{property:"Global Vairables",value:"LIKE_THIS"},{property:"Private Methods",value:"_likeThis()"}]);
     this.caseConventions;
     
@@ -68,5 +97,68 @@ function ApplicationViewModel(){
     self.openInTabs = function(){
         openApplicationSettingsTab(self);
     };
+    
+    self.loadRepo = function(repoToLoad){
+        console.log(repoToLoad);
+        
+        self.rootSystems.push(new SystemViewModel(repoToLoad.name, repoToLoad.description));
+        
+        self.githubHandler.loadRepo(repoToLoad.name, self.rootSystems()[self.rootSystems().length -1]);
+        
+//        var repo = self.githubHandler.githubReference.getRepo(self.githubUserViewModel().userName(), repoToLoad.name);
+//        
+//        repo.show(function(err, repoResults) {
+//            console.log(repoResults);
+//        });
+//        
+//        var root;
+//        
+//        repo.getTree('master?recursive=true', function(err, tree) {
+//            console.log(tree);
+//            root = tree;
+//            
+//            repo.read('master', root[0].path, function(err, data) {
+//                console.log(data);
+//            });
+//            
+//        });
+//        
+    }
+    
+    self.loadGithubUser = function(githubUser){
+        
+        self.githubUserViewModel(new GitHubUserViewModel(githubUser));
+        
+        
+        self.githubHandler.getUserBasicData(function(userData){
+            if(userData !== undefined){
+                self.githubUserViewModel().profilePicURL(userData.avatar_url);
+                self.githubUserViewModel().profileUrl(userData.html_url);
+                self.githubUserViewModel().userName(userData.login);
+                self.githubUserViewModel().displayName(userData.name);
+                console.log(userData);
+            }
+        });
+        
+        
+        self.usersRepos.removeAll();
+        
+        
+        self.githubHandler.getUserReposOverview(function(repos){
+            if(repos !== undefined){
+                for(var i = 0; i < repos.length; i ++){
+                    self.usersRepos.push({
+                        "name":repos[i].name,
+                        "description":repos[i].description,
+                        "url":repos[i].url
+                    });
+            }
+            }
+        });
+
+        
+        self.openInTabs();
+        
+    }
 
 }

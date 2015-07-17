@@ -4,48 +4,52 @@ To change this license header, choose License Headers in Project Properties.
 To change this template file, choose Tools | Templates
 and open the template in the editor.
 -->
-<div class="row">
-    <div class='col-xs-12 col-sm-6 col-md-4'>
-        <h3>Pseudo Node:</h3>
-    </div>
-    <div class='col-xs-12 col-sm-6 col-md-4'>
-        <h3></h3>
-    </div>
-    <div class='col-xs-12 col-sm-6 col-md-4'>
-        <h3>Log in to Github</h3>
-        <label for="exampleInputName2">Username</label>
-        <input type="text" class="form-control" id="exampleInputName2" placeholder="Jane Doe">
-        <label for="exampleInputPassword1">Password</label>
-        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
-         <button class="btn btn-default">Sign in</button>
-    </div>
-    </div>
+
+
+<div class="container-fluid">
     <div class="row">
-    <div class='col-sm-12 col-md-6'>
-        <h3>About:</h3>
+        
+        <div class='col-xs-12 col-sm-6 col-md-4'>
+            <h3>Log in to Github</h3>
+            
+            <label for="exampleInputName2">Username</label>
+            <input type="text" class="form-control" id="githubUserName" placeholder="Jane Doe">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" id="githubPassword" placeholder="Password">
+            <button class="btn btn-default" onclick="signIntoGithub()">Sign in</button>
+        </div>
+        
+        <div class='col-xs-12 col-sm-6 col-md-4'>
+            <h3>Pseudo Node:</h3>
+        
+        </div>
+        <div class='col-xs-12 col-sm-6 col-md-4'>
+            <h3></h3>
+        </div>
+        
     </div>
-    <div class='col-sm-12 col-md-6'>
-        <h3>Recent Updates:</h3>
-    </div>
-    </div>
-    <div class="row">
-
-    <div class='col-xs-12 col-sm-6 col-md-4'>
-        <h3>Technologies Used:</h3>
-        <ul>
-            <li>Knockout.js</li>
-            <li>Bootstrap</li>
-            <li>Dojo (or tried to)</li>
-            <li>jquery</li>
-        </ul>
-    </div>
-
-    <div class='col-xs-12 col-sm-6 col-md-4'>
-        <h3>About:</h3>
-    </div>
-
-    <div class='col-xs-12 col-sm-6 col-md-4'>
-        <h3>About:</h3>
-    </div>
-
+    
 </div>
+    
+
+<script>
+    
+   
+    
+    function signIntoGithub(){
+        
+        var username = document.getElementById("githubUserName").value;
+        var password = document.getElementById("githubPassword").value;
+        
+        var github = new Github({
+            username: username,
+            password: password,
+            auth: "basic"
+        });
+        
+        applicationsViewModel.setGithubReference(github,username);
+        
+    }
+    
+</script>
+    

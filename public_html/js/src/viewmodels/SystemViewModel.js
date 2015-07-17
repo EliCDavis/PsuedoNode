@@ -39,14 +39,18 @@ function SystemViewModel(name, description, subSystemOf){
      * 
      * @returns {undefined}
      */
-    this.addNewClass = function(){
+    this.addNewClass = function(openInTabs){
         this.classesAssociated.push(new ClassViewModel("Class Name", "Class Description, be thorough enough so people know what you mean"));
         this.classesAssociated()[this.classesAssociated().length-1].system(this);
 
         //do this last once all changes to the class have been done
-        openClassEditTab(this.classesAssociated()[this.classesAssociated().length-1]);
+        if(openInTabs == null || openInTabs == true){
+            openClassEditTab(this.classesAssociated()[this.classesAssociated().length-1]);
+        }
         
         self.updateRenderer();
+        
+        return this.classesAssociated()[this.classesAssociated().length-1];
     };
     
     
@@ -56,13 +60,18 @@ function SystemViewModel(name, description, subSystemOf){
      * 
      * @returns {undefined}
      */
-    self.addNewSubsystem = function(){
+    self.addNewSubsystem = function(openInTabs){
         self.subSystems.push(new SystemViewModel("Subsystem","This is a subsystem of "+self.name(), self));
         self.subSystems()[self.subSystems().length-1].application(this.application());
-        openSystemEditTab(self.subSystems()[self.subSystems().length-1], self);
         
+        if(openInTabs == null || openInTabs == true){
+            openSystemEditTab(self.subSystems()[self.subSystems().length-1], self);
+        }
         
+                
         self.updateRenderer();
+        
+        return  self.subSystems()[self.subSystems().length-1];
     };
     
     

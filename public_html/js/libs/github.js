@@ -83,7 +83,7 @@
 
       xhr.setRequestHeader('Content-Type','application/json;charset=UTF-8');
       if ((options.token) || (options.username && options.password)) {
-        var authorization = options.token ? 'token ' + options.token : 'Basic ' + btoa(options.username + ':' + options.password);
+        var authorization = options.token ? 'token ' + options.token : 'Basic ' + window.btoa(options.username + ':' + options.password);
         xhr.setRequestHeader('Authorization', authorization);
       }
       if (data) {
@@ -417,7 +417,7 @@
           };
         } else {
           	content = {
-              "content": btoa(String.fromCharCode.apply(null, new Uint8Array(content))),
+              "content": window.btoa(String.fromCharCode.apply(null, new Uint8Array(content))),
               "encoding": "base64"
             };
           }
@@ -675,7 +675,7 @@
           if (err && err.error !== 404) return cb(err);
           _request("PUT", repoPath + "/contents/" + encodeURI(path), {
             message: message,
-            content: btoa(content),
+            content: window.btoa(content),
             branch: branch,
             sha: sha
           }, cb);

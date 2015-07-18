@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<br>
+<div class="container-fluid">
+    <div class="row">
+
+        <div class='col-xs-12 col-sm-6 col-md-4'>
+            <h4>Basic Info 
+                <small data-bind='with: system'>
+                    <span class='glyphicon glyphicon-cog' aria-hidden='true'></span>
+                    <span data-bind='text: name'></span>
+                </small>
+            </h4>
+            
+            <div class="input-group">
+                <div class="input-group-addon">Name</div>
+                <input type='text' class='form-control' data-bind='value: name'>
+            </div>
+            <textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea>
+            <br>
+
+            <h4>Purposes This Class Serves
+                <span class='btn-group'>
+                    <button type='button' class='btn btn-default btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
+                        <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span><span class='caret'></span>
+                    </button>
+                    <ul class='dropdown-menu' role='menu' data-bind='foreach: purposesItDoesNotServe()'>
+                        <li><a href='#' data-bind='text: name, click: $parent.addNewPurpose'></a></li>
+                    </ul>
+                </span>
+            </h4>
+            
+            <dl data-bind='foreach: purposesItServes'>
+                <dt>
+                    <button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>
+                        <span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> 
+                    </button>
+                    <span data-bind='text: name'></span>
+                </dt>
+                <dd>
+                    <span data-bind='text: description'></span><br>
+                    <span>(<a href='#' data-bind='click: $parent.removePurpose'>Remove</a>)</span><br>
+                </dd>
+                
+            </dl>
+            
+            <div class='has-error' data-bind='visible: purposesItServes().length < 1'>
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    A Class should serve a purpose! Define purposes in the System to get started.
+                </div>
+            </div>
+            
+            <h4>Design Patterns Implementing
+                <span class='btn-group'>
+                    <button type='button' class='btn btn-default btn-sm dropdown-toggle' data-toggle='dropdown' aria-expanded='false'>
+                        <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span><span class='caret'></span>
+                    </button>
+                    <ul class='dropdown-menu' role='menu' data-bind='foreach: patternsItDoesNotImplement()'>
+                        <li><a href='#' data-bind='text: name, click: $parent.addNewPattern'></a></li>
+                    </ul>
+                </span>
+            </h4>
+            
+            <dl data-bind='foreach: patternsImplementing'>
+                <dt>
+                    <button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.removePattern'>
+                        <span class='glyphicon glyphicon-remove' aria-hidden='true'></span> 
+                    </button>
+                    <span data-bind='text: name'></span>
+                </dt>
+                <dd data-bind='text: description'></dd>
+            </dl>
+            
+        </div>
+        
+        <div class='col-sm-12 col-md-8'>
+            <h4>
+                <button type='button' class='btn btn-default btn-sm' data-bind='click: createNewMethod'>
+                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span>
+                </button>
+                Methods
+            </h4>
+            
+            <div class='row'>
+                
+                <div data-bind='foreach: getPatternMethods()'>
+                    
+                    <div class='col-xs-12 col-sm-6 col-md-4'>
+                        <div class='panel panel-success'>
+                            <div class='panel-heading' data-bind='text: name'></div>
+                            <div class='panel-body'>
+
+                                <div class="input-group">
+                                    <div class="input-group-addon">Name</div>
+                                    <input type='text' class='form-control' data-bind='value: name'>
+                                </div>
+                                
+                                <textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea>
+                                <br>
+                                
+                                <div class="input-group">
+                                    <div class="input-group-addon">Parameters</div>
+                                    <input type='text' class='form-control' data-bind='value: parameters'>
+                                </div>
+                                
+                                <div class="input-group">  
+                                    <div class="input-group-addon">Returns</div>
+                                    <input type='text' class='form-control' data-bind='value: returnType'>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                    
+                <div data-bind="foreach: methods">
+                    
+                    <div class='col-xs-12 col-sm-6 col-md-4'>
+                        <div class='panel panel-default'>
+                            
+                            <div class='panel-heading'>
+                                
+                                <button type='button' class='btn btn-default btn-sm' data-bind='click: $parent.removeMethod'>
+                                    <span class='glyphicon glyphicon-minus-sign' aria-hidden='true'></span>
+                                </button>
+                            
+                                <span data-bind="text: name"></span>
+                                
+                            </div>
+                            
+                            <div class='panel-body'>
+
+                                <div class="input-group">
+                                    <div class="input-group-addon">Name</div>
+                                    <input type='text' class='form-control' data-bind='value: name'>
+                                </div>
+                                
+                                <textarea class='form-control' style='width:100%;' rows='3' data-bind='value: description' placeholder='Description of Class'></textarea>
+                                <br>
+                                
+                                <div class="input-group">
+                                    <div class="input-group-addon">Parameters</div>
+                                    <input type='text' class='form-control' data-bind='value: parameters'>
+                                </div>
+                                
+                                <div class="input-group">  
+                                    <div class="input-group-addon">Returns</div>
+                                    <input type='text' class='form-control' data-bind='value: returnType'>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+</div>

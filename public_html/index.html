@@ -7,20 +7,21 @@ and open the template in the editor.
 <html>
     <head>
     
+        <!--Libraries-->
         <script src="js/libs/knockout-3.3.0.js"></script>
         <script src="js/libs/jquery.min.js"></script>
         <script src="js/libs/twitter-bootstrap/js/bootstrap.js"></script>
-        <script src="js/libs/dojo/dojo.js"></script>
         <script src = "js/libs/noeldelgado_Values.js_master_index.js"></script><!--Shading and Lightening Colors-->
         
+        <!--Github API-->
         <script src="js/libs/underscore-min.js"></script>
         <script src ="js/libs/github.js"></script>
         
-        <!--<script src="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dojo/dojo.js" data-dojo-config="async: true"></script>-->
         
-        <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/dojo/1.10.4/dijit/themes/claro/claro.css" media="screen">
         <link href="js/libs/twitter-bootstrap/css/bootstrap.css" rel="stylesheet">
+        
         <link href="nofloat.css" rel="stylesheet">
+        
         
         <script src="js/src/viewmodels/HomeViewModel.js"></script>
         <script src="js/src/viewmodels/SystemViewModel.js"></script>
@@ -53,9 +54,9 @@ and open the template in the editor.
             
             <div class="container-fluid">
             
-                <div class ="row">
+                <div class ="row content">
 
-                    <div class="col-md-3  no-float verticalLine" id="SideBar">
+                    <nav class="col-md-3  navigation" id="SideBar">
                         <br>
                         <h3>Pseudo Node
                             <!--Settings Tab-->
@@ -109,10 +110,10 @@ and open the template in the editor.
                         </div>
                             
                         
-                    </div>
+                    </nav>
                     
                     
-                    <div class="col-md-9 no-float">
+                    <div class="col-md-9 content">
                         <br>
                         <div id="TabedContent">
                             
@@ -139,217 +140,49 @@ and open the template in the editor.
             jQuery(document).ready(function ($) {
                 $('#tabs').tab();
             });
-           
+
             var homeViewModel = new HomeViewModel();
-           
-            var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see"); 
-            
+
+            var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see");
+
             var applicationsViewModel = new ApplicationViewModel();
             applicationsViewModel.rootSystems.push(system1);
            
             system1.application(applicationsViewModel);
-            
+
             applicationsViewModel.start();
-           
+
             function canvasUpdate(){    
-                
+
                 for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
                     renderSystems(applicationsViewModel.rootSystems()[i]);
                 }
-                
+
                 //systemCanvas.renderSystem();
                 window.requestAnimationFrame(canvasUpdate);
+                
             }
-            
+
 
             function renderSystems(rootSystem){
-                
+
                 rootSystem.systemRenderer.renderSystem();
-                
+
                 for(var i = 0; i < rootSystem.subSystems().length; i ++){
                     renderSystems(rootSystem.subSystems()[i]);
                 }
-                
+
             }
-           
-           function openOurHomeTab(){
+
+            function openOurHomeTab(){
                homeViewModel.openInTabs()
-           }
-           
-           openOurHomeTab();
-    
+            }
+
+            openOurHomeTab();
+
             window.requestAnimationFrame(canvasUpdate);
-            
-            ko.applyBindings(applicationsViewModel,document.getElementById("SideBar"))
-            
-            //Don't put anything after this if your offline, will throw errors and nothing else will get executed
-            //CreateSystemsWindow();
-            
-            function createLayout(){
-                 require([
-                     
-                    "dojo/dom", 
-                     
-                    "dijit/layout/BorderContainer",
-                    "dijit/layout/ContentPane",
-                    "dijit/layout/TabContainer",
-                     
-                     
-                     "dojo/domReady!"
-               ], function(dom, BorderContainer, ContentPane, TabContainer){
-                   
-                    var applicationContainer = new BorderContainer({
-                        style: "height: 100%; width: 100%;",
-                        design : "sidebar"
-                    }, dom.byId("application"));
 
-                    var systemsView = new ContentPane({
-                        title : "Systems View",
-                        content: "left"
-                    });
-                    
-                    var editView = new TabContainer({
-                        title: "Editor View"
-                    });
-                    
-                    var cp1 = new ContentPane({
-                        title: "Food",
-                        content: "We offer amazing food"
-                    });
-                    editView.addChild(cp1);
-
-                    var cp2 = new ContentPane({
-                        title: "Drinks",
-                        content: "We are known for our drinks."
-                    });
-                    editView.addChild(cp2);
-                    
-                    applicationContainer.addChild(systemsView);
-                    applicationContainer.addChild(editView);
-                   
-               });
-            }
-            
-            
-
-            function CreateSystemsWindow(){
-            
-                // Require dependencies
-               require([
-                   "dijit/Menu",
-                   "dijit/MenuItem",
-                   "dijit/MenuBar",
-                   "dijit/MenuBarItem",
-                   "dijit/PopupMenuBarItem",
-                   
-                   "dojo/dom", 
-                   "dojo/dom-construct",
-                   
-                   "dojo/domReady!"
-                   
-                   
-               ], function(Menu, MenuItem, MenuBar, MenuBarItem, PopupMenuBarItem, dom, domConstruct){
-                   // create the Menu container
-                   var mainMenu = new MenuBar({}, "SystemsSelection");
-
-                   // create Menu container and child MenuItems
-                   // for our sub-menu (no srcNodeRef; we will
-                   //add it under a PopupMenuItem)
-                   var viewMenu = new Menu({
-                       id: "viewMenu"
-                   });
-
-                   // define the task sub-menu items
-                   viewMenu.addChild(new MenuItem({
-                       id: "All",
-                       label: "All"
-                   }));
-                   
-                   for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
-                        // define the task sub-menu items
-                        viewMenu.addChild(new MenuItem({
-                            id: i,
-                            label: "need to figure out how to update..."
-                        }));
-                   }
-
-                   // create and add main menu items
-                   mainMenu.addChild(new MenuBarItem({
-                       id: "addNew",
-                       label: "Add"
-                   }));
-
-                   mainMenu.addChild(new MenuBarItem({
-                       id: "edit",
-                       label: "Edit"
-                   }));
-
-                   // make task menu item open the sub-menu we defined above
-                   mainMenu.addChild(new PopupMenuBarItem({
-                       id: "veiw",
-                       label: "Veiw",
-                       popup: viewMenu
-                   }));
-
-                   mainMenu.startup();
-                   viewMenu.startup();
-                   
-                   var parentNode = dom.byId("SystemHolder");
-                    for(var i = 0; i < applicationsViewModel.rootSystems().length; i ++){
-                        var html = "";
-                        //html +=systems[i].name+"</br>";
-                        html += "<h4>Description:</h4>";
-                        html +="<p data-bind='text: description'></p>";
-                        
-                        html += "<h4>Purposes:</h4>";
-                        if(applicationsViewModel.rootSystems()[i].purposes.length > 0){
-                            html +="<ul>";
-                            for(var p = 0; p < applicationsViewModel.rootSystems()[i].purposes.length; p ++){
-                                html +="<li>"+applicationsViewModel.rootSystems()[i].purposes[p]+"</li>";
-                            }
-                            html+="</ul>";
-                        } else {
-                             html+="<p>None</p>";
-                        }
-                        
-                        html += "<h4>Subsystems:</h4>";
-                        if(applicationsViewModel.rootSystems()[i].subSystems().length > 0){
-                            html +="<ul>";
-                            for(var p = 0; p < applicationsViewModel.rootSystems()[i].subSystems().length; p ++){
-                                html +="<li>"+applicationsViewModel.rootSystems()[i].subSystems()[p]+"</li>";
-                            }
-                            html+="</ul>";
-                        } else {
-                             html+="<p>None</p>";
-                        }
-                        
-                        html += "<h4>Classes:</h4>";
-                        if(applicationsViewModel.rootSystems()[i].classesAssociated().length > 0){
-                            html +="<ul>";
-                            for(var p = 0; p < applicationsViewModel.rootSystems()[i].classesAssociated().length; p ++){
-                                html +="<li>"+applicationsViewModel.rootSystems()[i].classesAssociated()[p]+"</li>";
-                            }
-                            html+="</ul>";
-                        } else {
-                             html+="<p>None</p>";
-                        }
-                        
-                        var panel = domConstruct.create('div', {class:"panel panel-default"},parentNode);
-                        
-                        var panelTitle = "<button type='button' class='btn sm' data-bind='click: openInTabs'>"+
-                                         "<span class='glyphicon glyphicon-edit' aria-hidden='true'></span></button>   <span data-bind='text: name' class='panel-title' style='position: relative;'></span>";
-                        domConstruct.create('div' , { class:'panel-heading', innerHTML: panelTitle }, panel);
-                        
-                        domConstruct.create('div' , { class:'panel-body', innerHTML:  html}, panel);
-                    
-                        $(panel).ready(function() {
-                             ko.applyBindings(applicationsViewModel.rootSystems()[i], panel);
-                        });
-    
-                    }
-               });
-               
-            }
+            ko.applyBindings(applicationsViewModel,document.getElementById("SideBar"));
             
         </script>
     </body>

@@ -9,13 +9,27 @@ function GithubHandler(reference,username){
  
     var self = this;
     
+    
+    /**
+     * The github reference, where we logged in with a username and password
+     */
     self.githubReference = reference;
     
+    
+    /**
+     * The github username used with the github reference
+     */
     self.githubUsername = username;
-    
-    
-    
-    
+        
+    /**
+     * Grabs JSON associated with the basic info of the user logged in.
+     * Because these calls run assynchrosouly there is a provided call back parameter.
+     * It also returns with the user data, so providing a callback is not nessicary if
+     * the data is not needed immeidiately
+     * 
+     * @param {function} callback the function we will call with the userdata when we finnally have data on the user
+     * @returns {JSON} The user data.
+     */
     self.getUserBasicData = function(callback){
         
         var user = self.githubReference.getUser();
@@ -31,7 +45,6 @@ function GithubHandler(reference,username){
             if(callback != null){
                 callback(userData);
             }
-            
             
             return userData;
             
@@ -60,6 +73,13 @@ function GithubHandler(reference,username){
     }
     
     
+    self.startNewPseudonodeProjectWithRepo = function(root, repoName){
+        applicationsViewModel.nameOfProjectLoaded(repoName);
+        applicationsViewModel.projectFileTree(root);
+        applicationsViewModel.openInTabs();
+    };
+    
+    
     self.loadRepo = function(repoName, rootToLoadInto){
         
         if(self.githubReference === null){
@@ -75,6 +95,7 @@ function GithubHandler(reference,username){
         //Go through and get entire tree.
         var root = {
             name: "root",
+            path: "",
             files: [],
             subDirectories: []
         };
@@ -89,6 +110,7 @@ function GithubHandler(reference,username){
             
             console.log(tree);
             
+            //parse tree into a json object.
             for(var treeIndex = 0; treeIndex < tree.length; treeIndex ++){
                 
                 var path = tree[treeIndex].path.split("/");
@@ -102,6 +124,7 @@ function GithubHandler(reference,username){
                         
                         if(tree[treeIndex].type === "blob"){
                             curDir.files.push({
+                                path: tree[treeIndex].path,
                                 name: path[pathIndex]
                             });
                         }
@@ -109,6 +132,7 @@ function GithubHandler(reference,username){
                         if(tree[treeIndex].type === "tree"){
                             curDir.subDirectories.push({
                                 name: path[pathIndex],
+                                path: tree[treeIndex].path,
                                 files: [],
                                 subDirectories: []
                             });
@@ -129,15 +153,53 @@ function GithubHandler(reference,username){
                 
             }
             
+            
+            var configFound = false;
+            
+            //look for if a psuedonode.json file exhists. If it does load it, if it doesn't go to new settings with tree.
+            for(var i = 0; i < root.subDirectories.length; i ++){
+                if(root.subDirectories[i].name === "pseudonode.json"){
+                    
+                    //json found! Load project
+                    configFound = true;
+                    
+                    repo.read('master', root.subDirectories[i].path, function(err, data) {
+                        
+                        if(err !== null){
+                            console.log("Error retriving config file!");
+                        }
+                        
+                        loadProjectFromConfigFile(data, root);
+                    });
+                    
+                }
+            }
+            
+            if(!configFound){
+                self.startNewPseudonodeProjectWithRepo(root, repoName);
+            }
+            
             console.log(root);
             
-            self.contructProject(root, rootToLoadInto);
+            //self.contructProject(root, rootToLoadInto);
             
         });
         
+    };
+    
+    
+    function loadProjectFromConfigFile(config, tree){
         
     }
     
+    
+    /**
+     * Recursively builds all systems and classes from the json inside of the system
+     * 
+     * @param {JSON} rootJson The structure we're going to build out of
+     * @param {SystemViewModel} system The system view model we're
+     * @returns {undefined}
+     */
     self.contructProject = function(rootJson, system){
         for(var i = 0; i < rootJson.subDirectories.length; i ++){
             var subSystem = system.addNewSubsystem(false);
@@ -148,12 +210,13 @@ function GithubHandler(reference,username){
         }
         
         for(var i = 0; i < rootJson.files.length; i ++){
+            
             var node = system.addNewClass(false);
             
             node.name(rootJson.files[i].name);
             
             
         }
-    }
+    };
     
 }

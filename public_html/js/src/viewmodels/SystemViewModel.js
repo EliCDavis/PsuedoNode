@@ -44,7 +44,7 @@ function SystemViewModel(name, description, subSystemOf){
         this.classesAssociated()[this.classesAssociated().length-1].system(this);
 
         //do this last once all changes to the class have been done
-        if(openInTabs == null || openInTabs == true){
+        if(openInTabs == null || openInTabs !== false){
             openClassEditTab(this.classesAssociated()[this.classesAssociated().length-1]);
         }
         
@@ -64,7 +64,7 @@ function SystemViewModel(name, description, subSystemOf){
         self.subSystems.push(new SystemViewModel("Subsystem","This is a subsystem of "+self.name(), self));
         self.subSystems()[self.subSystems().length-1].application(this.application());
         
-        if(openInTabs == null || openInTabs == true){
+        if(openInTabs == null || openInTabs != false){
             openSystemEditTab(self.subSystems()[self.subSystems().length-1], self);
         }
         

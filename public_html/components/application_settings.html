@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<div class="container-fluid">
+    
+    <div class="row">
+        
+        <div class='col-xs-12 col-sm-6 col-md-4'>
+            
+            <h3>
+                <button type='button' class='btn btn-default' data-bind='click: createNewDesignPattern'>
+                    
+                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span>
+                </button>
+                Defined Root Systems
+            </h3>
+            
+            <div data-bind="if: rootSystems().length > 0">
+                <div data-bind="foreach: rootSystems">
+                    <h4 data-bind='text: name'></h4>
+                    Root Directory: <span data-bind='text: rootFolderInProject'></span><br>
+                </div>
+            </div>
+            
+            <div data-bind="if: rootSystems().length == 0">
+                <div class="alert alert-danger" role="alert">
+                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+                    <span class="sr-only">Error:</span>
+                    To start using Pseudo Node define the folders that contain your source code.
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class='col-xs-12 col-sm-6 col-md-4'>
+            
+            <h3>Programming Standards<small>You wish</small></h3>
+            Define programming standards here and pray that you and others will actually follow them
+
+            <h4>Naming Conventions:</h4>
+            Have clicking edit on naming conventions open a modal
+            <div data-bind='foreach: namingConventions'>
+                <div class="input-group">
+                    <div class="input-group-addon" data-bind="text: property"></div>
+                    <input type='text' class='form-control' data-bind='value: value'>
+                </div>
+            </div>
+            
+            <h4>
+                <button type='button' class='btn btn-default' data-bind='click: createNewDesignPattern'>
+                    
+                    <span class='glyphicon glyphicon-plus-sign' aria-hidden='true'></span>
+                </button>
+                Design Patterns
+            </h4>
+
+            <div data-bind='foreach: defaultDesignPatterns'>
+                
+                <button type='button' class='btn btn-default btn-xs' data-bind='click: openInTabs'>
+                    <span class='glyphicon glyphicon-eye-open' aria-hidden='true'></span> 
+                </button>
+                
+                <span data-bind='text: name'></span><br>
+                
+            </div>
+            
+        </div>
+        
+    </div>
+    
+</div>

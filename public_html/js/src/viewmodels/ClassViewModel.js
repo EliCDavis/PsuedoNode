@@ -59,6 +59,16 @@ function ClassViewModel(name, description){
         self.methods.push(new ObjectMethodViewModel());
     };
     
+    self.removeMethod = function(method){
+        
+        var indexOfMethod = self.methods().indexOf(method)
+        
+        if(indexOfMethod !== -1){
+            self.methods.remove(method);
+        }
+        
+    }
+    
     self.patternsImplementing = ko.observableArray();
     
     self.patternsItDoesNotImplement = function(){

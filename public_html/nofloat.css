@@ -9,41 +9,22 @@ and open the template in the editor.
 */
 
 /*http://stackoverflow.com/questions/19089384/twitter-bootstrap-3-two-columns-full-height*/
-/*html,body,.container
-{
-    height:100%;
-}
-.container
-{
-    display:table;
-    width: 100%;
-    margin-top: -50px;
-    padding: 50px 0 0 0; set left/right padding according to needs
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
-}
-header
-{
-    background: green;
-    height: 50px;
+
+/*.content {
+    overflow: hidden;
 }
 
-.row
-{
-    height: 100%;
-    display: table-row;
+.navigation {
+    padding-bottom: 100%;
+    margin-bottom: -100%;
 }
-.col-md-3.no-float, .col-md-9.no-float {
-    float: none;  thanks baxabbit 
+
+.header {
+    background: green;
 }
-.col-md-3
-{
-    display: table-cell;
+.navigation {
     background: pink;
 }
-.col-md-9
-{
-    display: table-cell;
+.content {
     background: yellow;
-  	float: none;
 }*/

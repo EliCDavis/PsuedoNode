@@ -185,11 +185,14 @@ function SystemRenderer() {
     };
 
     this.updateDrag = function (e) {
+        
         if (self.nodeDragging != null) {
             
             self.nodeDragging.position = this.getZoomPositionToRegular([e.offsetX - self.positionOnNodeDragging[0], 
                 e.offsetY - self.positionOnNodeDragging[1]]);
+            
         }
+        
         self.displayNodeNameUpdate(e);
         
     };
@@ -331,7 +334,9 @@ function SystemRenderer() {
 
         //this.canvas.height = this.canvas.parentNode.parentNode.parentNode.getChild.childNodes[0].offsetHeight;
         //console.log(this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight);
-        this.canvas.height = this.canvas.parentNode.parentNode.parentNode.offsetHeight - this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight - 150;
+        //this.canvas.height = this.canvas.parentNode.parentNode.parentNode.offsetHeight - this.canvas.parentNode.parentNode.parentNode.getElementsByClassName("row")[0].offsetHeight - 150;
+
+        this.canvas.height = 500;
 
     };
 
@@ -495,7 +500,7 @@ function SystemRenderer() {
 
         this.fitToContainer();
 
-        this.gravitate();
+        //this.gravitate();
 
         var ctx = this.canvas.getContext('2d');
         

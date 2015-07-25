@@ -57,17 +57,17 @@ function SystemViewModel(name, description, subSystemOf){
     /**
      * Creates an empty sub system to the current system and sets up any
      * needed connections it needs and opens it up in the tab view
-     * 
-     * @returns {undefined}
+     * @param {boolean} openInTabs whether or not to open it up in tabs, default is TRUE
+     * @returns {SystemViewModel}
      */
     self.addNewSubsystem = function(openInTabs){
+        
         self.subSystems.push(new SystemViewModel("Subsystem","This is a subsystem of "+self.name(), self));
         self.subSystems()[self.subSystems().length-1].application(this.application());
         
         if(openInTabs == null || openInTabs != false){
             openSystemEditTab(self.subSystems()[self.subSystems().length-1], self);
         }
-        
                 
         self.updateRenderer();
         

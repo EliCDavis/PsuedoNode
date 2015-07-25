@@ -38,26 +38,31 @@ and open the template in the editor.
                     </div>
                 </div>
                 
-                <div data-bind="if: basicInfoOnLoadedRepo() ">
-                    <h3>Repo In Use:</h3>
+                <div data-bind="if: applicationsViewModel.nameOfProjectLoaded().length != 0 ">
+                    <h3>Repo In Use:  <span data-bind="text: applicationsViewModel.nameOfProjectLoaded"></span></h3>
                 </div>
                 
-                <h3>List of Repos:</h3>
-                <div data-bind='foreach: usersRepos'>
-                    <h4><button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.loadRepo'>
-                        <span class='glyphicon glyphicon-import' aria-hidden='true'></span> </button><span data-bind='text: name'></span></h4>
-                    <p data-bind='text: description'></p>
+                
+                <div data-bind="if: applicationsViewModel.nameOfProjectLoaded().length == 0 ">
+                
+                    <h3>List of Repos:</h3>
+                    
+                    <div data-bind='foreach: usersRepos'>
+                        <h4><button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.loadRepo'>
+                            <span class='glyphicon glyphicon-import' aria-hidden='true'></span> </button><span data-bind='text: name'></span></h4>
+                        <p data-bind='text: description'></p>
+                    </div>
+                    
                 </div>
             
             </div>
-            
             
         </div>
         
         <div class='col-xs-12 col-sm-6 col-md-4'>
             <h3>Pseudo Node:</h3>
-        
         </div>
+        
         <div class='col-xs-12 col-sm-6 col-md-4'>
             <h3></h3>
         </div>
@@ -69,7 +74,7 @@ and open the template in the editor.
 
 <script>
     
-   
+    
     
     function signIntoGithub(){
         
@@ -83,6 +88,8 @@ and open the template in the editor.
         });
         
         homeViewModel.setGithubReference(github,username);
+        
+        workspace.logInToGitHub(username, password);
         
     }
     

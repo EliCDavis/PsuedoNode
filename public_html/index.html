@@ -6,6 +6,13 @@ and open the template in the editor.
 -->
 <html>
     <head>
+        
+        <title>
+            Pseudo Node
+        </title>
+        
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
         <!--Libraries-->
         <script src="js/libs/knockout-3.3.0.js"></script>
@@ -13,38 +20,39 @@ and open the template in the editor.
         <script src="js/libs/twitter-bootstrap/js/bootstrap.js"></script>
         <script src = "js/libs/noeldelgado_Values.js_master_index.js"></script><!--Shading and Lightening Colors-->
         
+        <!--Dragula ;)-->
+        <script src="js/libs/dragula/dragula.js"></script>
+        <link href ="js/libs/dragula/dragula.min.css" rel="stylesheet">
+        
         <!--Github API-->
         <script src="js/libs/underscore-min.js"></script>
         <script src ="js/libs/github.js"></script>
-        
         
         <link href="js/libs/twitter-bootstrap/css/bootstrap.css" rel="stylesheet">
         
         <link href="nofloat.css" rel="stylesheet">
         
+        <script src="js/src/WorkspaceManagement/GithubHandler.js"></script>
+        <script src ="js/src/WorkspaceManagement/Workspace.js"></script>
         
+        <script src="js/src/Canvas/SystemRender.js"></script>
+        
+        <!--View Models For KO-->
         <script src="js/src/viewmodels/HomeViewModel.js"></script>
         <script src="js/src/viewmodels/SystemViewModel.js"></script>
-        <script src="js/src/GithubHandler.js"></script>
         <script src="js/src/viewmodels/ApplicationViewModel.js"></script>
         <script src="js/src/viewmodels/ClassViewModel.js"></script>
         <script src="js/src/viewmodels/PurposeViewModel.js"></script>
         <script src="js/src/viewmodels/ObjectMethodViewModel.js"></script>
         <script src ="js/src/viewmodels/DesignPatternTemplateViewModel.js"></script>
-        <script src="js/src/Canvas/SystemRender.js"></script>
         <script src ="js/src/viewmodels/GitHubUserViewModel.js"></script>
+        
+        
         
         <script src="js/src/TabManager.js"></script>
         
+        <link rel="stylesheet" href="style.css">
         
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-         <link rel="stylesheet" href="style.css">
-        
-        <title>
-            Pseudo Node
-        </title>
         
     </head>
     
@@ -69,6 +77,13 @@ and open the template in the editor.
                                 <span class='glyphicon glyphicon-home' aria-hidden='true'></span>
                             </button>
                             
+                            <!--Save Button-->
+                            <span data-bind="if: nameOfProjectLoaded().length > 0">
+                                <button type='button' class='btn btn-default btn-sm' onclick="saveOurWorkspace()">
+                                    <span class='glyphicon glyphicon-cloud-upload' aria-hidden='true'></span>
+                                </button>
+                            </span>
+                                
                         </h3>
                         
                         <div style="height:100%">
@@ -141,16 +156,12 @@ and open the template in the editor.
                 $('#tabs').tab();
             });
 
+
+            //Declare all needed variables for building everything else
+            var workspace = new Workspace();
             var homeViewModel = new HomeViewModel();
-
-            var system1 = new SystemViewModel("UI", "Keeps up with anything graphical, making sure the player sees what they need to see");
-
             var applicationsViewModel = new ApplicationViewModel();
-            applicationsViewModel.rootSystems.push(system1);
-           
-            system1.application(applicationsViewModel);
-
-            applicationsViewModel.start();
+            
 
             function canvasUpdate(){    
 
@@ -174,8 +185,13 @@ and open the template in the editor.
 
             }
 
+
+            function saveOurWorkspace(){
+                workspace.saveToJSON();
+            }
+
             function openOurHomeTab(){
-               homeViewModel.openInTabs()
+               homeViewModel.openInTabs();
             }
 
             openOurHomeTab();

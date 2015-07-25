@@ -47,6 +47,7 @@ function HomeViewModel(){
         }
         
         return true;
+        
     },this);
     
     
@@ -54,6 +55,7 @@ function HomeViewModel(){
      * A object containing basic information on the currentely loaded repo.
      */
     self.basicInfoOnLoadedRepo = ko.computed(function(){
+        
         if(applicationsViewModel === undefined || applicationsViewModel.nameOfProjectLoaded() === undefined || applicationsViewModel.nameOfProjectLoaded() ===""){
             return null;
         }
@@ -117,7 +119,7 @@ function HomeViewModel(){
                         "description":repos[i].description,
                         "url":repos[i].url
                     });
-            }
+                }
             }
         });
   

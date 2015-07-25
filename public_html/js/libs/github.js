@@ -55,6 +55,8 @@
             return k + '=' + v;
           }).join('&');
         }
+        
+        console.log(url + '&' + (new Date()).getTime());
         return url + '&' + (new Date()).getTime();
       }
 
@@ -380,6 +382,13 @@
 
       this.getCommit = function(branch, sha, cb) {
         _request("GET", repoPath + "/git/commits/"+sha, null, function(err, commit) {
+          if (err) return cb(err);
+          cb(null, commit);
+        });
+      };
+      
+      this.getAllCommits = function(branch, cb) {
+        _request("GET", repoPath + "/commits", null, function(err, commit) {
           if (err) return cb(err);
           cb(null, commit);
         });

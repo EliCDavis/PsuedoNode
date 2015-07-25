@@ -3,11 +3,10 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/GithubHandler.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/HomeViewModel.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/GitHubUserViewModel.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/WorkspaceManagement/GithubHandler.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/WorkspaceManagement/Workspace.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/index.html</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/TabManager.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/SystemViewModel.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/home_tab.html</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/ApplicationViewModel.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/application_settings.html</file>

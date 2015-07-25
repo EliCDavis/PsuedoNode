@@ -73,9 +73,10 @@ function GithubHandler(reference,username){
     }
     
     
-    self.startNewPseudonodeProjectWithRepo = function(root, repoName){
+    self.startNewPseudonodeProjectWithRepo = function(root, repoName, flatRoot){
         applicationsViewModel.nameOfProjectLoaded(repoName);
         applicationsViewModel.projectFileTree(root);
+        applicationsViewModel.loadProjectFiles(flatRoot)
         applicationsViewModel.openInTabs();
     };
     
@@ -92,6 +93,10 @@ function GithubHandler(reference,username){
         
         var repo = self.githubReference.getRepo(self.githubUsername, repoName);
         
+        repo.show(function(err, repoResults) {console.log(repoResults);});
+        
+        repo.getCommits(null, function(err, commit) {console.log(commit);});
+        
         //Go through and get entire tree.
         var root = {
             name: "root",
@@ -100,6 +105,8 @@ function GithubHandler(reference,username){
             subDirectories: []
         };
         
+        var rootFlattened;
+        
         repo.getTree('master?recursive=true', function(err, tree) {
             
             if(err !== null){
@@ -107,6 +114,8 @@ function GithubHandler(reference,username){
                 console.log(err);
                 return;
             }
+            
+            rootFlattened = tree;
             
             console.log(tree);
             
@@ -157,26 +166,26 @@ function GithubHandler(reference,username){
             var configFound = false;
             
             //look for if a psuedonode.json file exhists. If it does load it, if it doesn't go to new settings with tree.
-            for(var i = 0; i < root.subDirectories.length; i ++){
-                if(root.subDirectories[i].name === "pseudonode.json"){
+            for(var i = 0; i < root.files.length; i ++){
+                if(root.files[i].name === "pseudonode.json"){
                     
                     //json found! Load project
                     configFound = true;
                     
-                    repo.read('master', root.subDirectories[i].path, function(err, data) {
+                    repo.read('master', root.files[i].path, function(err, data) {
                         
                         if(err !== null){
                             console.log("Error retriving config file!");
                         }
                         
-                        loadProjectFromConfigFile(data, root);
+                        self.loadProjectFromConfigFile(repoName, data, root, rootFlattened);
                     });
                     
                 }
             }
             
             if(!configFound){
-                self.startNewPseudonodeProjectWithRepo(root, repoName);
+                self.startNewPseudonodeProjectWithRepo(root, repoName, rootFlattened);
             }
             
             console.log(root);
@@ -188,8 +197,43 @@ function GithubHandler(reference,username){
     };
     
     
-    function loadProjectFromConfigFile(config, tree){
+    self.loadProjectFromConfigFile = function(repoName, data, tree, flattened){
         
+        console.log("Need to load project from config file!");
+        
+        var config = JSON.parse(data);
+        
+        applicationsViewModel.nameOfProjectLoaded(repoName);
+        applicationsViewModel.projectFileTree(tree);
+        applicationsViewModel.loadProjectFiles(flattened);
+        
+        for(var i = 0; i < config.definedRoots.length; i ++){
+            applicationsViewModel.directoriesAsRoot.push(config.definedRoots[i]);
+            applicationsViewModel.directoriesUnassigned.remove(config.definedRoots[i]);
+        }
+        
+        for(var i = 0; i < config.hiddenPaths.length; i ++){
+            applicationsViewModel.directoriesHidden.push(config.hiddenPaths[i]);
+            applicationsViewModel.directoriesUnassigned.remove(config.hiddenPaths[i]);
+        }
+        
+        applicationsViewModel.reloadAllSystemsAppropriately();
+        
+        applicationsViewModel.openInTabs();
+        
+    };
+    
+    self.commitWorspaceSettings = function(repoName, data){
+        var repo = self.githubReference.getRepo(self.githubUsername, repoName);
+        
+        repo.write('master', "pseudonode.json", JSON.stringify(data), "Saving of workspace from the webapplication PseudoNode", function(err){
+            
+            if(err !== null){
+                alert("Error saving changes to repo!");
+                console.log(err);
+            }
+            
+        });
     }
     
     

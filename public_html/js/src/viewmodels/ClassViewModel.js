@@ -35,7 +35,11 @@ function ClassViewModel(name, description){
         var purposesNotServing = ko.observableArray();
         
         if(self.system() === null){
-            return null;
+            return purposesNotServing;
+        }
+        
+        if(self.purposesItServes() === null || self.purposesItServes().length === 0){
+            return self.system().purposes();
         }
         
         for(var s = 0; s < self.system().purposes().length; s++){
@@ -112,8 +116,10 @@ function ClassViewModel(name, description){
     };
     
     
-    this.openInTabs = function(){
-        openClassEditTab(this);
+    self.openInTabs = function(){
+        
+        //console.log(t);
+        openClassEditTab(self);
        
     };
     

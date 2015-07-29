@@ -42,20 +42,20 @@ function DesignPatternTemplateViewModel(name, description){
     
     self.addNewMethod = function(){
         self.methodsThatComeWithPattern.push(new ObjectMethodViewModel());
-    }
+    };
     
     self.removeMethod = function(method){
         
-        var indexOfMethod = self.methodsThatComeWithPattern().indexOf(method)
+        var indexOfMethod = self.methodsThatComeWithPattern().indexOf(method);
         
         if(indexOfMethod !== -1){
             self.methodsThatComeWithPattern.remove(method);
         }
-    }
+    };
     
     self.openInTabs = function(){
         openDesignPattenEditTab(self);
-    }
+    };
     
     /**
      * Closes the settings tab if it is currentely open
@@ -64,6 +64,6 @@ function DesignPatternTemplateViewModel(name, description){
      */
     this.closeTab = function(){
         closeTab(self.id);
-    }
+    };
     
 }

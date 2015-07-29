@@ -203,23 +203,7 @@ function GithubHandler(reference,username){
         
         var config = JSON.parse(data);
         
-        applicationsViewModel.nameOfProjectLoaded(repoName);
-        applicationsViewModel.projectFileTree(tree);
-        applicationsViewModel.loadProjectFiles(flattened);
-        
-        for(var i = 0; i < config.definedRoots.length; i ++){
-            applicationsViewModel.directoriesAsRoot.push(config.definedRoots[i]);
-            applicationsViewModel.directoriesUnassigned.remove(config.definedRoots[i]);
-        }
-        
-        for(var i = 0; i < config.hiddenPaths.length; i ++){
-            applicationsViewModel.directoriesHidden.push(config.hiddenPaths[i]);
-            applicationsViewModel.directoriesUnassigned.remove(config.hiddenPaths[i]);
-        }
-        
-        applicationsViewModel.reloadAllSystemsAppropriately();
-        
-        applicationsViewModel.openInTabs();
+        workspace.loadFromJSON(repoName, config, tree, flattened);
         
     };
     

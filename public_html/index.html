@@ -47,7 +47,11 @@ and open the template in the editor.
         <script src ="js/src/viewmodels/DesignPatternTemplateViewModel.js"></script>
         <script src ="js/src/viewmodels/GitHubUserViewModel.js"></script>
         
-        
+        <!--Importer and Exporter for our programs-->
+        <script src ='js/src/IO/SystemImportExport.js'></script>
+        <script src ='js/src/IO/ClassImportExport.js'></script>
+        <script src ='js/src/IO/PurposeImportExport.js'></script>
+        <script src ='js/src/IO/DesignPatternImportExport.js'></script>
         
         <script src="js/src/TabManager.js"></script>
         
@@ -105,10 +109,10 @@ and open the template in the editor.
                                         </button>
                                         
                                         <span class='glyphicon glyphicon-file' aria-hidden='true'></span> 
-                                        <span data-bind='text: classesAssociated().length'></span>
+                                        <span data-bind='text: allClassesCount()'></span>
                                         
                                         <span class='glyphicon glyphicon-align-left' aria-hidden='true'></span>
-                                        <span data-bind='text: subSystems().length'></span>
+                                        <span data-bind='text: allSubsystemsCount()'></span>
                                         
                                         <span class='glyphicon glyphicon-star-empty' aria-hidden='true'></span>
                                         <span data-bind='text: purposes().length'></span>
@@ -158,9 +162,9 @@ and open the template in the editor.
 
 
             //Declare all needed variables for building everything else
-            var workspace = new Workspace();
             var homeViewModel = new HomeViewModel();
             var applicationsViewModel = new ApplicationViewModel();
+            var workspace = new Workspace(homeViewModel, applicationsViewModel);
             
 
             function canvasUpdate(){    

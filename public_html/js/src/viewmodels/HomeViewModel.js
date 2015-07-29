@@ -9,32 +9,16 @@ function HomeViewModel(){
     
     var self = this;
     
-    
+    /**
+     * Used for creating tabs
+     */
     self.id = 100;
     
-    /**
-     * GitHubUserViewModel
-     */
-    self.githubUserViewModel = ko.observable(new GitHubUserViewModel());
-    
     
     /**
-     * In an attempt to seperate functionality from the interface, we have a handler meant for interfacing 
-     * with our Github object
+     * General info on the user which is logged in.
      */
-    self.githubHandler;
-    
-    
-    /**
-     * Sets the github obj 
-     * @param {type} reference
-     * @param {String} username 
-     * @returns {undefined}
-     */
-    self.setGithubReference = function(reference, username){
-        self.githubHandler = new GithubHandler(reference, username);  
-        self.loadGithubUser();
-    };
+    self.basicGithubUserInfo = ko.observable(null);
     
     
     /**
@@ -42,7 +26,7 @@ function HomeViewModel(){
      */
     self.loggedIn = ko.computed(function(){
         
-        if(self.githubUserViewModel().userName() === undefined){
+        if(self.basicGithubUserInfo() === null){
             return false;
         }
         
@@ -81,48 +65,7 @@ function HomeViewModel(){
     
     
     self.loadRepo = function(repoToLoad){
-        console.log(repoToLoad);
-        
-        var newRoot = new SystemViewModel(repoToLoad.name, repoToLoad.description);
-        newRoot.application(self);
-        
-        //self.rootSystems.push(newRoot);
-        
-        self.githubHandler.loadRepo(repoToLoad.name);
-
-    };
-    
-    
-    self.loadGithubUser = function(githubUser){
-        
-        self.githubUserViewModel().githubUser = githubUser;
-        
-        self.githubHandler.getUserBasicData(function(userData){
-            if(userData !== undefined){
-                self.githubUserViewModel().profilePicURL(userData.avatar_url);
-                self.githubUserViewModel().profileUrl(userData.html_url);
-                self.githubUserViewModel().userName(userData.login);
-                self.githubUserViewModel().displayName(userData.name);
-                console.log(userData);
-            }
-        });
-        
-        
-        self.usersRepos.removeAll();
-        
-        
-        self.githubHandler.getUserReposOverview(function(repos){
-            if(repos !== undefined){
-                for(var i = 0; i < repos.length; i ++){
-                    self.usersRepos.push({
-                        "name":repos[i].name,
-                        "description":repos[i].description,
-                        "url":repos[i].url
-                    });
-                }
-            }
-        });
-  
+        workspace.loadRepo(repoToLoad.name);
     };
     
 }

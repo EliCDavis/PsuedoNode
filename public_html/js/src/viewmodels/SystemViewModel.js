@@ -5,11 +5,20 @@
  */
 
 
+/**
+ * Creates a new System View Model that can be opened in the tab view.
+ * Used to represent a directory in a users project
+ * 
+ * @param {String} name The name of the system
+ * @param {String} description The description of the system
+ * @param {SystemViewModel} subSystemOf The system this system is a child of.
+ * @returns {SystemViewModel}
+ */
 function SystemViewModel(name, description, subSystemOf){
     
     var self = this;
     
-    this.id = Date.now();
+    self.id = Date.now();
     
     /**
      * A system is normalyy defined as a directory, and all the files in that directory are classes.
@@ -37,6 +46,7 @@ function SystemViewModel(name, description, subSystemOf){
      * Creates a new class object and adds it to the system and then
      * opens it up in the edit tab view.
      * 
+     * @param {Boolean} openInTabs Whether or not you want to open the newly created class in the tabs, default is true
      * @returns {undefined}
      */
     this.addNewClass = function(openInTabs){
@@ -44,7 +54,7 @@ function SystemViewModel(name, description, subSystemOf){
         this.classesAssociated()[this.classesAssociated().length-1].system(this);
 
         //do this last once all changes to the class have been done
-        if(openInTabs == null || openInTabs !== false){
+        if(openInTabs === null || openInTabs !== false){
             openClassEditTab(this.classesAssociated()[this.classesAssociated().length-1]);
         }
         
@@ -65,7 +75,7 @@ function SystemViewModel(name, description, subSystemOf){
         self.subSystems.push(new SystemViewModel("Subsystem","This is a subsystem of "+self.name(), self));
         self.subSystems()[self.subSystems().length-1].application(this.application());
         
-        if(openInTabs == null || openInTabs != false){
+        if(openInTabs === null || openInTabs !== false){
             openSystemEditTab(self.subSystems()[self.subSystems().length-1], self);
         }
                 
@@ -80,10 +90,17 @@ function SystemViewModel(name, description, subSystemOf){
      */
     this.purposes = ko.observableArray();
     
+    /**
+     * Creates a empty purpose and adds it to the system and then opens up a tab in tab view.
+     * 
+     * @returns {PurposeViewModel} The purpose just created.
+     */
     this.addNewPurpose = function(){
         this.purposes.push( new PurposeViewModel() );
         this.purposes()[this.purposes().length-1].system(this);
         openPurposeEditTab(this.purposes()[this.purposes().length-1]);
+        
+        return this.purposes()[this.purposes().length-1];
     };
     
     
@@ -201,21 +218,44 @@ function SystemViewModel(name, description, subSystemOf){
     
     /**
      * Counts all of this systems subsystems and any subsystems of it's subsystems and so on
-     * Naturally recursive function.
      * 
      * @returns {int}
      */
     self.allSubsystemsCount = function(){
         
-        var subsystemsFound =[];
+        var subsystemsFound = 0;
         
         //iterate through all subsystems
         for(var i = 0; i < self.subSystems().length; i ++){
             
             //iterate though all of subsystems found subsystems ;)
+            subsystemsFound += self.subSystems()[i].allSubsystemsCount() + 1;
             
-            subsystemsFound.push();
         }
+        
+        return subsystemsFound;
+    };
+    
+    
+    /**
+     * Counts all the classes of the system and any subsystems classes
+     * 
+     * @returns {int}
+     */
+    self.allClassesCount = function(){
+        
+        var classesFound = self.classesAssociated().length;
+        
+        //iterate through all subsystems
+        for(var i = 0; i < self.subSystems().length; i ++){
+            
+            //iterate though all of subsystems found subsystems ;)
+            classesFound += self.subSystems()[i].allClassesCount();
+            
+        }
+        
+        return classesFound;
+        
     }
     
     /**

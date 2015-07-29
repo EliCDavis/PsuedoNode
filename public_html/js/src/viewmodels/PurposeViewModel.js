@@ -12,6 +12,7 @@ function PurposeViewModel(){
     
     self.name = ko.observable("Purpose");
     self.description = ko.observable("Description");
+    self.isComplete = ko.observable(false);
     
     //@! make systems set seystem variable when creating a purpose
     self.system = ko.observable();

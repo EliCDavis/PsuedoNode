@@ -6,10 +6,12 @@
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/WorkspaceManagement/GithubHandler.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/WorkspaceManagement/Workspace.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/index.html</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/IO/ClassImportExport.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/IO/DesignPatternImportExport.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/ClassViewModel.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/SystemViewModel.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/home_tab.html</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/system_edit.html</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/ApplicationViewModel.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/application_settings.html</file>
         </group>
     </open-files>
 </project-private>

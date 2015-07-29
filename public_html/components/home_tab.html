@@ -25,15 +25,15 @@ and open the template in the editor.
                
                 <h3>Logged In As:</h3>
                
-                <div class="media">
+                <div class="media" data-bind="with: basicGithubUserInfo">
                     <div class="media-left">
-                        <a data-bind="attr: { href: githubUserViewModel().profileUrl }">
-                            <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: githubUserViewModel().profilePicURL }" style="width:64px; height:64px;">
+                        <a data-bind="attr: { href: profileUrl }">
+                            <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: profilePicURL }" style="width:64px; height:64px;">
                         </a>
                     </div>
                     
                     <div class="media-body">
-                        <h4 class="media-heading" data-bind="text: githubUserViewModel().displayName"></h4>
+                        <h4 class="media-heading" data-bind="text: displayName"></h4>
                         <p></p>
                     </div>
                 </div>
@@ -75,19 +75,10 @@ and open the template in the editor.
 <script>
     
     
-    
     function signIntoGithub(){
         
         var username = document.getElementById("githubUserName").value;
         var password = document.getElementById("githubPassword").value;
-        
-        var github = new Github({
-            username: username,
-            password: password,
-            auth: "basic"
-        });
-        
-        homeViewModel.setGithubReference(github,username);
         
         workspace.logInToGitHub(username, password);
         

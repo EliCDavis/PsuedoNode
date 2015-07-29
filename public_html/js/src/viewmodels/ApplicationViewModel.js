@@ -11,22 +11,38 @@ function ApplicationViewModel(){
     
     self.id = 200;
     
-    this.nameOfProjectLoaded = ko.observable("");
+    self.nameOfProjectLoaded = ko.observable("");
     
-    this.namingConventions = ko.observableArray([{property:"Global Vairables",value:"LIKE_THIS"},{property:"Private Methods",value:"_likeThis()"}]);
+    
+    self.editingNamingConventions = ko.observable(false);
+    
+    self.toggleEditingNamingConventions = function (){
+        self.editingNamingConventions(!self.editingNamingConventions());
+    };
+    
+    self.namingConventions = ko.observableArray();
+    
+    self.addNewNamingConvention = function(){
+        self.namingConventions.push({property:"Thing to name",value:"How to name"});
+    }
+    
+    self.removeNamingConvention = function(convention){
+        self.namingConventions.remove(convention);
+    };
     
     //type SystemViewModel
-    this.rootSystems = ko.observableArray();
+    self.rootSystems = ko.observableArray();
     
     //typeDesignPatternTemplateViewModel
-    this.defaultDesignPatterns = ko.observableArray();
+    self.defaultDesignPatterns = ko.observableArray();
     
     self.createNewDesignPattern = function(){
         var newPattern = new DesignPatternTemplateViewModel("Name","Description");
         self.defaultDesignPatterns.push(newPattern);
-        newPattern.openInTabs()
+        newPattern.openInTabs();
     };
     
+
     
     self.projectFileTree = ko.observable();
     
@@ -251,7 +267,7 @@ function ApplicationViewModel(){
      */
     this.closeTab = function(){
         closeTab(self.id);
-    }
+    };
 
     self.openInTabs = function(){
         openApplicationSettingsTab(self);

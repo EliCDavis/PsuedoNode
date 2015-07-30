@@ -8,7 +8,7 @@ function PurposeViewModel(){
     
     var self = this;
     
-    self.id = Date.now();
+    self.id = generateUUID();
     
     self.name = ko.observable("Purpose");
     self.description = ko.observable("Description");

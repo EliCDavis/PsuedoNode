@@ -9,7 +9,7 @@ function ClassViewModel(name, description){
     
     var self = this;
     
-    self.id = Date.now();
+    self.id = generateUUID();
     
     self.name = ko.observable(name);
     
@@ -109,7 +109,7 @@ function ClassViewModel(name, description){
             
         }
         return allMethods;
-    }
+    };
     
     self.closeTab = function(){
         closeTab(self.id);
@@ -119,6 +119,7 @@ function ClassViewModel(name, description){
     self.openInTabs = function(){
         
         //console.log(t);
+        console.log("Open in tabs", self.id);
         openClassEditTab(self);
        
     };

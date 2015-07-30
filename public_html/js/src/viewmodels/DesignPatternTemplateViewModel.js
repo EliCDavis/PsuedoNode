@@ -19,7 +19,7 @@ function DesignPatternTemplateViewModel(name, description){
     
     var self = this;
     
-    self.id = Date.now();
+    self.id = generateUUID();
     
     self.name = ko.observable(name);
     

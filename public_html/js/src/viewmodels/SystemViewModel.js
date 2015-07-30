@@ -18,7 +18,7 @@ function SystemViewModel(name, description, subSystemOf){
     
     var self = this;
     
-    self.id = Date.now();
+    self.id = generateUUID();
     
     /**
      * A system is normalyy defined as a directory, and all the files in that directory are classes.

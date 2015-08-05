@@ -37,3 +37,7 @@ function confirmAction(actionMessage, cb) {
 
 /// Actived by clicking 'Perform Action' button
 
+function confirmActionCallback() {
+    cacb()
+}
+

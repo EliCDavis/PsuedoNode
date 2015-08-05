@@ -23,8 +23,8 @@ and open the template in the editor.
             
             <div data-bind="visible: loggedIn()">
                
-                <h3>Logged In As:</h3>
-               
+                <br />
+                
                 <div class="media" data-bind="with: basicGithubUserInfo">
                     <div class="media-left">
                         <a data-bind="attr: { href: profileUrl }">
@@ -33,13 +33,50 @@ and open the template in the editor.
                     </div>
                     
                     <div class="media-body">
-                        <h4 class="media-heading" data-bind="text: displayName"></h4>
-                        <p></p>
+                        <h4 class="media-heading" data-bind="text: displayName" style="margin-left: 10px"></h4>
+                        <p style="margin-left: 10px">
+                            <span data-bind="text: following"/> following <br />
+                            <span data-bind="text: followers"/> followers
+                        </p>
                     </div>
                 </div>
                 
                 <div data-bind="if: applicationsViewModel.nameOfProjectLoaded().length != 0 ">
-                    <h3>Repo In Use:  <span data-bind="text: applicationsViewModel.nameOfProjectLoaded"></span></h3>
+                    <!--<h3 data-bind="text: applicationsViewModel.nameOfProjectLoaded" />-->
+                    <h3>Commits</h3>
+                    <div data-bind="foreach: repoCommits" style='overflow:auto; height: 450px;'>
+                        
+                        <div class="media" >
+                            <div class="media-left">
+                                <a data-bind="attr: { href: profileUrl }">
+                                    <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: profilePicURL }" style="width:64px; height:64px;">
+                                </a>
+                            </div>
+
+                            <div class="media-body">
+                                
+                                <h4 style="margin-left: 10px">
+                                    <span data-bind="text: authorLogin" /> 
+                                    <small data-bind="text: new Date(date)"></small>
+                                </h4> <br />
+
+                            </div>
+                            <br />
+                            <p style="margin-left: 10px" data-bind="text: message" />
+                            
+                            <a data-bind="attr: { href: commitHTMLLink }">
+                                <button type="button" class="btn btn-default btn-sm">
+                                    <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+                                </button>
+                            </a>
+                            
+                            <button class="btn btn-default btn-sm" onclick="commitsOverview.openInTabs()"> More Info </button>
+                            
+                            <hr>
+                        </div>
+                        
+                    </div>
+                    
                 </div>
                 
                 
@@ -59,13 +96,21 @@ and open the template in the editor.
             
         </div>
         
-        <div class='col-xs-12 col-sm-6 col-md-4'>
-            <h3>Pseudo Node:</h3>
+        <div class='col-xs-12 col-sm-6 col-md-8'>
+            <br />
+            <div data-bind="if: canEditReadMe">
+                <button type="button" class='btn btn-default btn-sm' data-bind="click: toggleEditingReadMe">Edit README</button>
+            </div>
+            <div data-bind="if: !currentelyEditingReadme()">
+                <span data-bind="html: readMeHTML"></span>
+            </div>
+            <div data-bind="if: currentelyEditingReadme()">
+                <br />
+                <textarea class='form-control' style='width:100%;' rows='25' data-bind="value: repoReadMeRaw"></textarea>
+            </div>
+            
         </div>
-        
-        <div class='col-xs-12 col-sm-6 col-md-4'>
-            <h3></h3>
-        </div>
+
         
     </div>
     

@@ -381,7 +381,7 @@
       // -------
 
       this.getCommit = function(branch, sha, cb) {
-        _request("GET", repoPath + "/git/commits/"+sha, null, function(err, commit) {
+        _request("GET", repoPath + "/commits/"+sha, null, function(err, commit) {
           if (err) return cb(err);
           cb(null, commit);
         });

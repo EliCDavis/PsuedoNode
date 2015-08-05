@@ -20,6 +20,59 @@ function HomeViewModel(){
      */
     self.basicGithubUserInfo = ko.observable(null);
     
+    /**
+     * Used to convert from markdown to html
+     */
+    self.showdown = new showdown.Converter();
+    
+    /**
+     * The actual file contents of the README, in the markdown language.
+     */
+    self.repoReadMeRaw = ko.observable();
+    
+    /**
+     * boolean flag keeping up with whether or not we are editing the readme file of the repo loaded in
+     */
+    self.currentelyEditingReadme = ko.observable(false);
+    
+    /**
+     * The ReadMeRaw converted into HTML format using showdown
+     */
+    self.readMeHTML = ko.computed(function(){
+        
+        //using this function as a subscribe, 
+        //if it changes while we're in edit mode we're assuming the user made the edit
+        if(self.currentelyEditingReadme()){
+            self.readMeHasChanged = true;
+        }
+        
+        return self.showdown.makeHtml(self.repoReadMeRaw());
+        
+    },self);
+    
+    
+    self.readMeHasChanged = false;
+    
+    
+    self.canEditReadMe = ko.computed(function(){
+        if(self.repoReadMeRaw() != null && self.repoReadMeRaw() !== ""){
+            return true;
+        }
+        return false;
+    },this);
+    
+    
+    /**
+     * Toggles the editing mode of the readme file
+     * @returns {undefined}
+     */
+    self.toggleEditingReadMe = function(){
+        self.currentelyEditingReadme(!self.currentelyEditingReadme());
+    };
+    
+    
+    self.repoCommits = ko.observableArray();
+    
     
     /**
      * Logic that decides whether or  not the user is currentely logged in to a Github account
@@ -35,20 +88,14 @@ function HomeViewModel(){
     },this);
     
     
-    /**
-     * A object containing basic information on the currentely loaded repo.
-     */
-    self.basicInfoOnLoadedRepo = ko.computed(function(){
-        
-        if(applicationsViewModel === undefined || applicationsViewModel.nameOfProjectLoaded() === undefined || applicationsViewModel.nameOfProjectLoaded() ===""){
-            return null;
+    self.repoIsLoaded = ko.computed(function(){
+        console.log();
+        if(applicationsViewModel === undefined || applicationsViewModel.nameOfProjectLoaded() === undefined || applicationsViewModel.nameOfProjectLoaded() === ""){
+            return false;
         }
-        
-        return {
-            name: applicationsViewModel.nameOfProjectLoaded()
-        };
-        
+        return true;
     });
+    
     
     
     self.usersRepos = ko.observableArray();

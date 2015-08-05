@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<div class="container-fluid">
+    
+    
+    <div class="row">
+        
+        <div class="col-md-3 col-sm-6 col-xs-12">
+            
+            <h4>Commits</h4>
+            <div data-bind="foreach: commits" style='overflow:auto; height: 650px;'>
+                        
+                <div class="media" >
+                    <div class="media-left">
+                        <a data-bind="attr: { href: profileUrl }">
+                            <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: profilePicURL }" style="width:64px; height:64px;">
+                        </a>
+                    </div>
+
+                    <div class="media-body">
+
+                        <h4 style="margin-left: 10px">
+                            <span data-bind="text: authorLogin" /> 
+                            <small data-bind="text: new Date(date)"></small>
+                        </h4> <br />
+
+                    </div>
+                    <br />
+                    <p style="margin-left: 10px" data-bind="text: message" />
+
+                    <a data-bind="attr: { href: commitHTMLLink }">
+                        <button type="button" class="btn btn-default btn-sm">
+                            <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
+                        </button>
+                    </a>
+                    <button type="button" class="btn btn-default btn-sm" data-bind="click: $parent.loadCommit">
+                        <span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></span>
+                    </button>
+                    <hr>
+                </div>
+
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            
+            <canvas id="purposesChart" width="800" height="800"></canvas>
+        
+            <script>
+//                var data = {
+//                    labels: ["Eating", "Drinking", "Sleeping", "Designing", "Coding", "Cycling", "Running"],
+//                    datasets: [
+//                        {
+//                            label: "My First dataset",
+//                            fillColor: "rgba(220,220,220,0.2)",
+//                            strokeColor: "rgba(220,220,220,1)",
+//                            pointColor: "rgba(220,220,220,1)",
+//                            pointStrokeColor: "#fff",
+//                            pointHighlightFill: "#fff",
+//                            pointHighlightStroke: "rgba(220,220,220,1)",
+//                            data: [65, 59, 90, 81, 56, 55, 40]
+//                        },
+//                        {
+//                            label: "My Second dataset",
+//                            fillColor: "rgba(151,187,205,0.2)",
+//                            strokeColor: "rgba(151,187,205,1)",
+//                            pointColor: "rgba(151,187,205,1)",
+//                            pointStrokeColor: "#fff",
+//                            pointHighlightFill: "#fff",
+//                            pointHighlightStroke: "rgba(151,187,205,1)",
+//                            data: [28, 48, 40, 19, 96, 27, 100]
+//                        }
+//                    ]
+//                };
+                
+                // Get the context of the canvas element we want to select
+                //var ctx = document.getElementById("purposesChart").getContext("2d");
+                //var myRadarChart = new Chart(ctx).Radar(data);
+            </script>
+            
+        </div>
+        
+        
+    </div>
+    
+    
+</div>

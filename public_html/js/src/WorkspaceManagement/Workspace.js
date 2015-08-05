@@ -11,7 +11,7 @@
 
 'use strict';
 
-function Workspace(homeViewmodel, applicationViewmodel){
+function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
     
     var self = this;
     
@@ -25,6 +25,18 @@ function Workspace(homeViewmodel, applicationViewmodel){
      * @type ApplicationViewModel
      */
     self.applicationViewModel = applicationViewmodel;
+    
+    
+    /**
+     * @type CommitsGraphicViewModel
+     */
+    self.commitsOverview = commitsOverview;
+    
+    
+    /**
+     * @type Github.Repository
+     */
+    self.repoCurrentelyLoaded = null;
     
     
     /**
@@ -76,12 +88,24 @@ function Workspace(homeViewmodel, applicationViewmodel){
         
         //commit the changes
         if(self.githubHandler !== null){
+            
+            console.log("README has been edited: " + self.homeViewModel.readMeHasChanged);
+            
             self.githubHandler.commitWorspaceSettings(self.applicationViewModel.nameOfProjectLoaded(), workspaceData);
         }
         
     };
     
     
+    /**
+     * Takes the JSON passed in and attempts to recreate our workspace from the last time it was saved.
+     * 
+     * @param {String} repoName Name of the repository we're attempting to represent
+     * @param {JSON} config
+     * @param {JSON} tree
+     * @param {type} flattened
+     * @returns {undefined}
+     */
     self.loadFromJSON = function(repoName, config, tree, flattened){
         
         self.applicationViewModel.nameOfProjectLoaded(repoName);
@@ -151,15 +175,19 @@ function Workspace(homeViewmodel, applicationViewmodel){
         self.githubHandler.getUserBasicData(function(userData){
             if(userData !== undefined){
                 
+                console.log(userData);
+                
                 basicUserData = {
+                    followers: userData.followers,
+                    following: userData.following,
                     profilePicURL: userData.avatar_url,
                     profileUrl: userData.html_url,
                     userName:userData.login,
                     displayName: ko.observable(userData.name)
                 };
                 
-                
                 self.homeViewModel.basicGithubUserInfo(basicUserData);
+            
             }
         });
         
@@ -181,9 +209,110 @@ function Workspace(homeViewmodel, applicationViewmodel){
         
     };
     
+    /**
+     * Recieves a README file in markdown language and loads it into the project to be viewed
+     * 
+     * @param {type} data The README file to load into the project.
+     * @returns {undefined}
+     */
+    self.loadReadMeFile = function(data){
+        self.homeViewModel.repoReadMeRaw(data);
+    };
+    
+    
+    /**
+     * Receives a JSON object of commits of a certain repository and get's the information wanted out of them
+     * and builds Commit view models
+     * 
+     * @param {type} commitData
+     * @returns {undefined}
+     */
+    self.loadInRepoCommits = function(commitData){
+        
+        var loadedCommits = [];
+        
+        for(var i = 0; i < commitData.length; i ++){
+            
+            var commit = {
+                authorLogin: commitData[i].commit.author.name,
+                profilePicURL: commitData[i].author.avatar_url,
+                profileUrl: commitData[i].author.html_url,
+                commitHTMLLink: commitData[i].html_url,
+                date: commitData[i].commit.author.date,
+                message: commitData[i].commit.message,
+                sha: commitData[i].sha
+            };
+            
+            loadedCommits.push(commit);
+            
+        }
+        
+        self.commitsOverview.commits(loadedCommits);
+        
+        self.homeViewModel.repoCommits(loadedCommits);
+        
+    };
+    
     
     self.loadRepo = function(repoToLoad){
-        self.githubHandler.loadRepo(repoToLoad);
+        self.repoCurrentelyLoaded = self.githubHandler.loadRepo(repoToLoad);
+    };
+    
+    
+    /**
+     * Loads in a commit based on it's sha.
+     * Only files that are relevent to the project are displayed.
+     * 
+     * @param {type} sha
+     * @param {type} cb
+     * @returns {undefined}
+     */
+    self.getCommit = function(sha,cb){
+        
+        self.githubHandler.getCommitInformation(self.repoCurrentelyLoaded, sha, function(commit){
+            
+            console.log(commit);
+            
+            var commitInfo = {
+                "filesModified": [],
+                "overallAdditions": 0,
+                "overallDeletions": 0
+            };
+            
+            //If there where any files modified...., figure out which and if they matter to our project.
+            if(commit.files !== null){
+                
+                for(var i = 0; i < commit.files.length; i ++){
+
+                    //If the file is contained in the specified files of the project..
+                    if(self.fileIsContainedInProject(commit.files[i].filename)){
+                        
+                        var modified = {
+                            "name": commit.files[i].filename,
+                            "additions": parseInt(commit.files[i].additions),
+                            "deletions": parseInt(commit.files[i].deletions),
+                            "status": commit.files[i].status
+                        };
+                        
+                        commitInfo.overallAdditions += modified.additions;
+                        commitInfo.overallDeletions += modified.deletions;
+
+                        commitInfo.filesModified.push(modified);
+                        
+                    }
+
+                }
+                
+            }
+            
+            cb(commitInfo);
+            
+        });
+        
+    };
+    
+    self.fileIsContainedInProject = function(fileName){
+      return true;  
     };
     
 }

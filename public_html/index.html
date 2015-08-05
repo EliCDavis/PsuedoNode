@@ -21,6 +21,9 @@ and open the template in the editor.
         <script src="js/libs/jquery.min.js"></script>
         <script src="js/libs/twitter-bootstrap/js/bootstrap.js"></script>
         <script src = "js/libs/noeldelgado_Values.js_master_index.js"></script><!--Shading and Lightening Colors-->
+        <script src ="js/libs/showdown.min.js"></script>
+        <script src="js/libs/Chart.min.js"></script>
+        
         
         <!--Dragula ;)-->
         <script src="js/libs/dragula/dragula.js"></script>
@@ -48,12 +51,16 @@ and open the template in the editor.
         <script src="js/src/viewmodels/ObjectMethodViewModel.js"></script>
         <script src ="js/src/viewmodels/DesignPatternTemplateViewModel.js"></script>
         <script src ="js/src/viewmodels/GitHubUserViewModel.js"></script>
+        <script src ="js/src/viewmodels/CommitsGraphicViewModel.js"></script>
         
         <!--Importer and Exporter for our programs-->
         <script src ='js/src/IO/SystemImportExport.js'></script>
         <script src ='js/src/IO/ClassImportExport.js'></script>
         <script src ='js/src/IO/PurposeImportExport.js'></script>
         <script src ='js/src/IO/DesignPatternImportExport.js'></script>
+        
+        <!--Calculators-->
+        <script src ="js/src/Calculators/CommitCalculator.js"></script>
         
         <script src="js/src/TabManager.js"></script>
         
@@ -166,8 +173,8 @@ and open the template in the editor.
             //Declare all needed variables for building everything else
             var homeViewModel = new HomeViewModel();
             var applicationsViewModel = new ApplicationViewModel();
-            var workspace = new Workspace(homeViewModel, applicationsViewModel);
-            
+            var commitsOverview = new CommitsGraphicViewModel();
+            var workspace = new Workspace(homeViewModel, applicationsViewModel, commitsOverview);
 
             function canvasUpdate(){    
 

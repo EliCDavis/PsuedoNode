@@ -70,7 +70,7 @@ function GithubHandler(reference,username){
             
         });
         
-    }
+    };
     
     
     self.startNewPseudonodeProjectWithRepo = function(root, repoName, flatRoot){
@@ -93,9 +93,12 @@ function GithubHandler(reference,username){
         
         var repo = self.githubReference.getRepo(self.githubUsername, repoName);
         
-        repo.show(function(err, repoResults) {console.log(repoResults);});
+        //repo.show(function(err, repoResults) {console.log(repoResults);});
         
-        repo.getCommits(null, function(err, commit) {console.log(commit);});
+        repo.getCommits(null, function(err, commit) {
+            console.log(commit);
+            workspace.loadInRepoCommits(commit);
+        });
         
         //Go through and get entire tree.
         var root = {
@@ -112,12 +115,12 @@ function GithubHandler(reference,username){
             if(err !== null){
                 alert("Error Grabbing Repo Information");
                 console.log(err);
-                return;
+                return null;
             }
             
             rootFlattened = tree;
             
-            console.log(tree);
+            //console.log(tree);
             
             //parse tree into a json object.
             for(var treeIndex = 0; treeIndex < tree.length; treeIndex ++){
@@ -162,7 +165,6 @@ function GithubHandler(reference,username){
                 
             }
             
-            
             var configFound = false;
             
             //look for if a psuedonode.json file exhists. If it does load it, if it doesn't go to new settings with tree.
@@ -179,6 +181,21 @@ function GithubHandler(reference,username){
                         }
                         
                         self.loadProjectFromConfigFile(repoName, data, root, rootFlattened);
+                        
+                    });
+                    
+                }
+                
+                if(root.files[i].name === "README.md"){
+                    
+                    repo.read('master', root.files[i].path, function(err, data) {
+                        
+                        if(err !== null){
+                            console.log("Error retriving Readme file!");
+                        }
+                        
+                        workspace.loadReadMeFile(data);
+                        
                     });
                     
                 }
@@ -188,19 +205,15 @@ function GithubHandler(reference,username){
                 self.startNewPseudonodeProjectWithRepo(root, repoName, rootFlattened);
             }
             
-            console.log(root);
-            
-            //self.contructProject(root, rootToLoadInto);
-            
         });
+        
+        return repo;
         
     };
     
     
     self.loadProjectFromConfigFile = function(repoName, data, tree, flattened){
-        
-        console.log("Need to load project from config file!");
-        
+           
         var config = JSON.parse(data);
         
         workspace.loadFromJSON(repoName, config, tree, flattened);
@@ -218,7 +231,23 @@ function GithubHandler(reference,username){
             }
             
         });
-    }
+    };
+    
+    
+    
+    self.getCommitInformation = function(repo, sha, cb){
+        
+        repo.getCommit('master', sha, function(err, commit) {
+            
+            if(err !== null){
+                alert("Error grabbing commit info!");
+                console.log(err);
+            }
+            
+            cb(commit);
+        });
+        
+    };
     
     
     /**

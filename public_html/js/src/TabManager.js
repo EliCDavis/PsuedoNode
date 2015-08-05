@@ -18,14 +18,14 @@ function activateTab(tab){
 
 Element.prototype.remove = function() {
     this.parentElement.removeChild(this);
-}
+};
 NodeList.prototype.remove = HTMLCollection.prototype.remove = function() {
     for(var i = 0, len = this.length; i < len; i++) {
         if(this[i] && this[i].parentElement) {
             this[i].parentElement.removeChild(this[i]);
         }
     }
-}
+};
 
 var tabManager = new TabManager();
 function TabManager(){
@@ -65,6 +65,42 @@ function TabManager(){
     };
 }
 
+
+function openCommitsGraphicTab(viewModel){
+
+    if(tabManager.tabIsOpen(viewModel.id)){
+        activateTab(viewModel.id);
+        return;
+    } 
+    
+    var navTabHtml = "";
+    var closeButton = "<button type='button' class='btn btn-default btn-sm' data-bind='click: closeTab'>"+
+                         "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>";
+    var homeIcon = "<span class='glyphicon glyphicon-check' aria-hidden='true'></span>";
+    navTabHtml += "<a data-toggle='tab' href='#edit"+viewModel.id+"' >"+homeIcon+" <span>Commits Overview</span><span class='dividerSpace'></span>  "+closeButton+"</a>";
+    
+    var tabToggle = $('<li />',
+        {
+            'id':viewModel.id,
+            'html':navTabHtml
+        }    
+        ).appendTo('#EditTabs');
+
+    ko.applyBindings(viewModel, tabToggle[0]);
+    
+    var tabContent = $('<div />', {
+        "class": 'tab-pane fade',
+        'id':'edit'+viewModel.id
+    }).appendTo('#EditTabsContent').load("components/commit_stats.html", function(){
+        ko.applyBindings(viewModel, tabContent[0]);
+    });
+    
+    tabContent.ready(function(){
+        tabManager.openNewTab(viewModel.id);
+        activateTab(viewModel.id);
+    });
+    
+}
 
 /**
  * Opens the Pseudo Node Home tab by loading in html with jqeury
@@ -257,7 +293,7 @@ function openClassEditTab(classView){
         activateTab(classView.id);
         return;
     } 
-    
+    console.log(classView.id);
     var navTabHtml = "";
     var closeButton = "<button type='button' class='btn btn-default btn-sm' data-bind='click: closeTab'>"+
                         "<span class='glyphicon glyphicon-remove' aria-hidden='true'></span> </button>";

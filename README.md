@@ -10,7 +10,7 @@ You can look through what documentation has been provided on the actual structur
 
 ### What this aims to be
 
-PseudoNode aims to be a project organization utility for providing more useful documentation and producing analytics for your project.  One ways that it aims to be more helpful is by allowing users to define programming standards, such as naming conventions and design patterns in the project's settings. Another feature is to allow the user to define 'purposes' in every directory, and assign those purposes to different files inside the directory and sub-directories so you know why they are there.	
+PseudoNode aims to be a project organization utility for providing more useful documentation and producing analytics for your project.  One way that it aims to be more helpful is by allowing users to define programming standards, such as naming conventions and design patterns in the project's settings. Another feature is to allow the user to define 'purposes' in every directory, and assign those purposes to different files inside the directory and sub-directories so you know why they are there.	
 
 ### Future
 Here's a run-down of features I want to provide:

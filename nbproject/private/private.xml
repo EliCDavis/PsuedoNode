@@ -3,15 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="1"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/libs/github.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/WorkspaceManagement/GithubHandler.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/WorkspaceManagement/Workspace.js</file>
             <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/index.html</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/IO/ClassImportExport.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/IO/DesignPatternImportExport.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/ClassViewModel.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/SystemViewModel.js</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/system_edit.html</file>
-            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/ApplicationViewModel.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/Calculators/CommitCalculator.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/js/src/viewmodels/CommitsGraphicViewModel.js</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/commit_stats.html</file>
+            <file>file:/C:/dev/projects/NetBeansProjects/PsuedoNote/public_html/components/home_tab.html</file>
         </group>
     </open-files>
 </project-private>

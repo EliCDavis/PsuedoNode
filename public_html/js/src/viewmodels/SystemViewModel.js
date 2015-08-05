@@ -149,11 +149,11 @@ function SystemViewModel(name, description, subSystemOf){
         if(self.subsystemOf != null){
             this.subsystemOf.removeSubSystem(this);
         }
-    }
+    };
     
     /**
      * 
-     * @param {SystemViewModel} subsystem The subsystem to remove.
+     * @param {subsystemToRemove} subsystem The subsystem to remove. 
      * @returns {undefined}
      */
     self.removeSubSystem = function(subsystemToRemove){
@@ -177,7 +177,7 @@ function SystemViewModel(name, description, subSystemOf){
             
         } 
         
-    }
+    };
     
     self.removeClass = function(classToRemove){
         
@@ -197,7 +197,7 @@ function SystemViewModel(name, description, subSystemOf){
             
         } 
         
-    }
+    };
     
     self.removePurpose = function(purposesToRemove){
         
@@ -214,7 +214,7 @@ function SystemViewModel(name, description, subSystemOf){
             
         } 
         
-    }
+    };
     
     /**
      * Counts all of this systems subsystems and any subsystems of it's subsystems and so on
@@ -256,7 +256,7 @@ function SystemViewModel(name, description, subSystemOf){
         
         return classesFound;
         
-    }
+    };
     
     /**
      * Searches though every property that contains an ID (purposes, classes, subsystems)
@@ -311,6 +311,33 @@ function SystemViewModel(name, description, subSystemOf){
         }
         
         console.log("Couldn't find anyone");
+    };
+    
+    /**
+     * Iterates through all classes and subsytems and figures out if any of them match the path specified
+     * 
+     * @param {type} path
+     * @returns {Boolean}
+     */
+    self.containsPath = function(path){
+    
+        if(self.rootFolderInProject() === path){
+            return true;
+        }
+    
+        for(var i = 0; i < self.classesAssociated().length; i ++){
+            if( self.rootFolderInProject() + "/" + self.classesAssociated()[i].name() === path){
+                return true;
+            }
+        }
+    
+        for(var i = 0; i < self.subSystems().length; i ++){
+            if(self.subSystems()[i].containsPath(path)){
+                return true;
+            }
+        }
+       
+        return false;
     }
     
     self.updateRenderer = function(){

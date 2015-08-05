@@ -11,6 +11,7 @@ function ApplicationViewModel(){
     
     self.id = 200;
     
+    
     self.nameOfProjectLoaded = ko.observable("");
     
     
@@ -24,7 +25,7 @@ function ApplicationViewModel(){
     
     self.addNewNamingConvention = function(){
         self.namingConventions.push({property:"Thing to name",value:"How to name"});
-    }
+    };
     
     self.removeNamingConvention = function(convention){
         self.namingConventions.remove(convention);
@@ -35,6 +36,7 @@ function ApplicationViewModel(){
     
     //typeDesignPatternTemplateViewModel
     self.defaultDesignPatterns = ko.observableArray();
+    
     
     self.createNewDesignPattern = function(){
         var newPattern = new DesignPatternTemplateViewModel("Name","Description");
@@ -129,7 +131,6 @@ function ApplicationViewModel(){
 
     /**
      * When the system structure of our project has changed, it's time to re evaluate what exacly is going on.
-     * @param {type} tree
      * @returns {undefined}
      */
     self.reloadAllSystemsAppropriately = function(){
@@ -139,12 +140,12 @@ function ApplicationViewModel(){
         //Go through and add files from the project appropriately
         for(var d = 0; d <  self.flattenedProjectTree.length; d ++){
         
-        
             //get some variables defined really quickly
             var currentFlattenedTreePath = self.flattenedProjectTree[d].path;
             var pathName = currentFlattenedTreePath.split("/")[currentFlattenedTreePath.split("/").length -1];
             
             var hidden = false;
+            
             //Check and make sure it's not in a hidden directory.
             for(var i = 0; i < self.directoriesHidden().length; i ++){
 

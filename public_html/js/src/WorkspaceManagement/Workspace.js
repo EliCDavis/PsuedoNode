@@ -312,7 +312,16 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
     };
     
     self.fileIsContainedInProject = function(fileName){
-      return true;  
+        
+        for(var i = 0; i < self.applicationViewModel.rootSystems().length; i ++){
+            
+            if(self.applicationViewModel.rootSystems()[i].containsPath(fileName)){
+                return true;
+            }
+        
+        }
+        
+      return false;  
     };
     
 }

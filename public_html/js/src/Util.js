@@ -16,4 +16,24 @@ function generateUUID(){
         return (c==='x' ? r : (r&0x3|0x8)).toString(16);
     });
     return uuid;
+
 };
+
+
+// Used in confirmAction and confirmActionCallback
+var cacb
+
+/// Conjures modal that asks user whether they want to perform or cancel an action.
+function confirmAction(actionMessage, cb) {
+    
+//    Call modal
+    $("#confirm-action").modal()
+//    actionMessage
+    $("#custom-Action-Message").text(actionMessage)
+//    Changes function called in confirmActionCallBack()
+    cacb = cb
+}
+
+
+/// Actived by clicking 'Perform Action' button
+

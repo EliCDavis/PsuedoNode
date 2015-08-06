@@ -45,6 +45,12 @@ function CommitsGraphicViewModel(){
     
     self.chart = null;
     
+    self.commitLoaded = null;
+    
+    self.chartSort = ko.observable();
+    
+    self.chartSort.subscribe( function(){ self.loadCommit(self.commitLoaded); }, self);
+    
     /**
      * Displays the commit passed in for better analysis of what it did to the project
      * 
@@ -52,23 +58,37 @@ function CommitsGraphicViewModel(){
      * @returns {undefined}
      */
     self.loadCommit = function(commitToLoad){
-        self.getCommitsCalculator().getCommitDataForRadarGraph(commitToLoad.sha,function(data){
+        
+        if(commitToLoad === null || commitToLoad === undefined){
+            return;
+        }
+        
+        self.commitLoaded = commitToLoad;
+        
+        var onDataRecived = function(data){
            
             var ctx = document.getElementById("purposesChart").getContext("2d");
             
             if(self.chart === null){
+            
                 self.chart = new Chart(ctx).Radar(data);
+            
             } else {
+                
                 console.log(self.chart);
                 self.chart.destroy();
                 self.chart = new Chart(ctx).Radar(data);
-//                self.chart.datasets[0].points = data.datasets[0].data;
-//                self.chart.datasets[1].points = data.datasets[1].data;
-//                self.chart.scale.labels = data.labels;
-//                self.chart.update();
+
             }
            
-        });
+        };
+        
+        if(self.chartSort() === "Purpose"){
+            self.getCommitsCalculator().getCommitDataForRadarGraphByPurpose(commitToLoad.sha,onDataRecived);
+        } else if(self.chartSort() === "File") {
+            self.getCommitsCalculator().getCommitDataForRadarGraphByFile(commitToLoad.sha,onDataRecived);
+        }
+        
     };
     
     /**

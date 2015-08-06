@@ -76,6 +76,8 @@ function SystemImportExport(){
         }
         
         var system = new SystemViewModel();
+        
+        //assign basic properties
         system.application(application);
         system.name(systemJSON.name);
         system.description(systemJSON.description);
@@ -86,10 +88,11 @@ function SystemImportExport(){
         var purposeIO = new PurposeImportExport();
         var purposesParsed = [];
         for(var i = 0; i < systemJSON.purposes.length; i ++){
-            purposesParsed.push(purposeIO.importPurposeFromJSON(systemJSON.purposes[i]));
+            var purpose = purposeIO.importPurposeFromJSON(systemJSON.purposes[i]);
+            purposesParsed.push(purpose);
+            system.purposes.push(purpose);
         }
-        system.purposes(purposesParsed);
-        
+                
         //import classes
         var classIO = new ClassImportExport();
         var classesParsed = [];

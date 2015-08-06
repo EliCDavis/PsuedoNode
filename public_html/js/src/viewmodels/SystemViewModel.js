@@ -338,7 +338,25 @@ function SystemViewModel(name, description, subSystemOf){
         }
        
         return false;
-    }
+    };
+    
+    self.getPurposesAssociatedWithPath = function(path){
+        
+        for(var i = 0; i < self.classesAssociated().length; i ++){
+            if( self.rootFolderInProject() + "/" + self.classesAssociated()[i].name() === path){
+                return self.classesAssociated()[i].purposesItServes();
+            }
+        }
+    
+        for(var i = 0; i < self.subSystems().length; i ++){
+            if(self.subSystems()[i].getPurposesAssociatedWithPath(path) !== null){
+                return self.subSystems()[i].getPurposesAssociatedWithPath(path);
+            }
+        }
+        
+        return null;
+    
+    };
     
     self.updateRenderer = function(){
         

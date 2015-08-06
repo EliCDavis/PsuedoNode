@@ -291,11 +291,20 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
                             "name": commit.files[i].filename,
                             "additions": parseInt(commit.files[i].additions),
                             "deletions": parseInt(commit.files[i].deletions),
-                            "status": commit.files[i].status
+                            "status": commit.files[i].status,
+                            "purposes": []
                         };
                         
                         commitInfo.overallAdditions += modified.additions;
                         commitInfo.overallDeletions += modified.deletions;
+                        
+                        //Add any associated purposes with the file.
+                        var assocPurposes = self.getPurposesAssociatedWithPath(commit.files[i].filename);
+                        if(assocPurposes !== null){
+                           for(var c = 0; c < assocPurposes.length; c ++){
+                               modified.purposes.push({"name": assocPurposes[c].name(), "id": assocPurposes[c].id});
+                            } 
+                        }
 
                         commitInfo.filesModified.push(modified);
                         
@@ -311,6 +320,12 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
         
     };
     
+    
+    /**
+     * Given a file name, we see if it's contained anywhere in our systems and subsystems.
+     * @param {String} fileName
+     * @returns {Boolean}
+     */
     self.fileIsContainedInProject = function(fileName){
         
         for(var i = 0; i < self.applicationViewModel.rootSystems().length; i ++){
@@ -321,7 +336,29 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
         
         }
         
-      return false;  
+        return false;  
+    };
+    
+    
+    /**
+     * Given a file path, we get any purposes associated with it.
+     * If we're given a class path, then it's those purposes associated with the class.
+     * @param {String} path
+     * @returns {PurposeViewModel[]}
+     */
+    self.getPurposesAssociatedWithPath = function(path){
+        
+        for(var i = 0; i < self.applicationViewModel.rootSystems().length; i ++){
+      
+            var purposes = self.applicationViewModel.rootSystems()[i].getPurposesAssociatedWithPath(path);
+            
+            if(purposes !== null){
+                return purposes;
+            }
+        
+        }
+        
+        return null;  
     };
     
 }

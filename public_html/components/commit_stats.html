@@ -6,6 +6,13 @@ and open the template in the editor.
 -->
 
 <div class="container-fluid">
+    <br/>
+    <div class="form-inline">
+        <label>View Edits By:</label>  <select class="form-control" data-bind="value: chartSort" style="width:15em">
+                <option>File</option>
+                <option>Purpose</option>
+            </select>
+    </div>
     
     
     <div class="row">
@@ -13,6 +20,7 @@ and open the template in the editor.
         <div class="col-md-3 col-sm-6 col-xs-12">
             
             <h4>Commits</h4>
+            
             <div data-bind="foreach: commits" style='overflow:auto; height: 650px;'>
                         
                 <div class="media" >

@@ -200,7 +200,11 @@ and open the template in the editor.
 
 
             function saveOurWorkspace(){
-                workspace.saveToJSON();
+                
+                confirmAction("Are you ready to commit settings to your repository?  All settings will be stored in psuedonode.json under the root.", function(){
+                    workspace.saveToJSON();
+                });
+
             }
 
             function openOurHomeTab(){

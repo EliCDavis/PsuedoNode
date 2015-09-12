@@ -112,7 +112,7 @@ function HomeViewModel(){
     
     
     self.loadRepo = function(repoToLoad){
-        workspace.loadRepo(repoToLoad.name);
+        workspace.loadRepo(repoToLoad);
     };
     
 }

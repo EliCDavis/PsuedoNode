@@ -8,10 +8,18 @@ and open the template in the editor.
 <div class="container-fluid">
     <br/>
     <div class="form-inline">
-        <label>View Edits By:</label>  <select class="form-control" data-bind="value: chartSort" style="width:15em">
-                <option>File</option>
-                <option>Purpose</option>
-            </select>
+        <label>View Edits By:</label>  
+        <select class="form-control" data-bind="value: chartSort" style="width:15em">
+            <option>File</option>
+            <option>Purpose</option>
+        </select>
+        
+        <span class="dividerSpace" />
+        <label style="color: green">++ <span data-bind="text: currentCommitAdditions"/></label>
+        
+        <span class="dividerSpace" />
+        <label style="color: red">-- <span data-bind="text: currentCommitDeletions"/></label>
+        
     </div>
     
     

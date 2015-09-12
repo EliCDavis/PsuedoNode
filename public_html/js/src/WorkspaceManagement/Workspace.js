@@ -34,9 +34,19 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
     
     
     /**
+     * Reference to our github repository object for making calls to githubs API
+     * 
      * @type Github.Repository
      */
     self.repoCurrentelyLoaded = null;
+    
+    /**
+     * Used for storing basic information about the repository currentely loaded
+     * such as author, name, etc.
+     * 
+     * @type json
+     */
+    self.repoCurrentelyLoadedInfo = null;
     
     
     /**
@@ -91,7 +101,7 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
             
             console.log("README has been edited: " + self.homeViewModel.readMeHasChanged);
             
-            self.githubHandler.commitWorspaceSettings(self.applicationViewModel.nameOfProjectLoaded(), workspaceData);
+            self.githubHandler.commitWorspaceSettings(self.repoCurrentelyLoadedInfo, workspaceData);
         }
         
     };
@@ -106,9 +116,10 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
      * @param {type} flattened
      * @returns {undefined}
      */
-    self.loadFromJSON = function(repoName, config, tree, flattened){
+    self.loadFromJSON = function(repo, config, tree, flattened){
         
-        self.applicationViewModel.nameOfProjectLoaded(repoName);
+        self.repoCurrentelyLoadedInfo = repo;
+        self.applicationViewModel.nameOfProjectLoaded(repo.name);
         self.applicationViewModel.projectFileTree(tree);
         self.applicationViewModel.loadProjectFiles(flattened);
         
@@ -200,7 +211,9 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
                     self.homeViewModel.usersRepos.push({
                         "name":repos[i].name,
                         "description":repos[i].description,
-                        "url":repos[i].url
+                        "url":repos[i].url,
+                        "fullName":repos[i].full_name,
+                        "author":repos[i].full_name.split("/")[0]
                     });
                 }
             }
@@ -235,13 +248,20 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
             
             var commit = {
                 authorLogin: commitData[i].commit.author.name,
-                profilePicURL: commitData[i].author.avatar_url,
-                profileUrl: commitData[i].author.html_url,
                 commitHTMLLink: commitData[i].html_url,
                 date: commitData[i].commit.author.date,
                 message: commitData[i].commit.message,
-                sha: commitData[i].sha
+                sha: commitData[i].sha,
+                
+                profilePicURL: "",
+                profileUrl: ""
+                
             };
+            
+            if(commitData[i].author != null){
+                commit.profilePicURL = commitData[i].author.avatar_url;
+                commit.profileUrl = commitData[i].author.html_url;
+            }
             
             loadedCommits.push(commit);
             

@@ -76,8 +76,10 @@ function CommitCalculator(workspace){
                 
             }
             
-            
-            cb(data);
+            cb( {
+                "graphData" : data,
+                "commitInfo": commitInfo
+            });
             
         });
         
@@ -120,7 +122,10 @@ function CommitCalculator(workspace){
                 data.datasets[1].data.push(commitInfo.filesModified[i].deletions);
             }
             
-            cb(data);
+            cb( {
+                "graphData" : data,
+                "commitInfo": commitInfo
+            });
             
         });
         

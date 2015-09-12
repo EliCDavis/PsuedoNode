@@ -1,6 +1,6 @@
 # PseudoNode
 
-This is an unfinished program!  Much is needed to be done! 
+This is an unfinished program!  
 Check out what the project looks like currently over [here](http://www.jayusstudios.com/Projects/PseudoNode/).
 
 ### Inspiration

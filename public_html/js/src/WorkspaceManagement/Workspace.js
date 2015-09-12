@@ -101,6 +101,10 @@ function Workspace(homeViewmodel, applicationViewmodel, commitsOverview){
             
             console.log("README has been edited: " + self.homeViewModel.readMeHasChanged);
             
+            if(self.homeViewModel.readMeHasChanged){
+               self.githubHandler.commitReadMEChanges(self.repoCurrentelyLoadedInfo, self.homeViewModel.repoReadMeRaw()); 
+            }
+            
             self.githubHandler.commitWorspaceSettings(self.repoCurrentelyLoadedInfo, workspaceData);
         }
         

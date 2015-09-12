@@ -236,6 +236,26 @@ function GithubHandler(reference,username){
         });
     };
     
+    /**
+     * This updates the projects readme file.
+     * 
+     * @param {type} repoInfo info needed for making the api calls to github
+     * @param {type} readMe the readme info we want to be reflected inside of the project
+     * @returns {undefined}
+     */
+    self.commitReadMEChanges = function(repoInfo, readMe){
+        console.log(repoInfo)
+        var repo = self.githubReference.getRepo(repoInfo.author, repoInfo.name);
+        
+        repo.write('master', "README.md", unescape(encodeURIComponent(readMe)), "Updating of README through PseudoNode", function(err){
+            
+            if(err !== null){
+                alert("Error saving changes to repo!");
+                console.log(err);
+            }
+            
+        });
+    };
     
     
     self.getCommitInformation = function(repo, sha, cb){

@@ -54,7 +54,7 @@ function DesignPatternTemplateViewModel(name, description){
     };
     
     self.openInTabs = function(){
-        openDesignPattenEditTab(self);
+        openDesignPatternEditTab(self);
     };
     
     /**

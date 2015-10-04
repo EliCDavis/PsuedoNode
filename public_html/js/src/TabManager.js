@@ -151,7 +151,7 @@ function openHomeTab(homeViewModel){
  * @param {DesignPatternTemplateViewModel} designPattern
  * @returns {undefined}
  */
-function openDesignPattenEditTab(designPattern){
+function openDesignPatternEditTab(designPattern){
     
     if(tabManager.tabIsOpen(designPattern.id)){
         activateTab(designPattern.id);

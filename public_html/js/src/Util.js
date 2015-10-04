@@ -18,7 +18,6 @@ function generateUUID(){
     return uuid;
 };
 
-
 // Used in confirmAction and confirmActionCallback
 var cacb
 
@@ -38,5 +37,4 @@ function confirmAction(actionMessage, cb) {
 function confirmActionCallback() {
     cacb()
 }
-
 

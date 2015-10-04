@@ -51,6 +51,10 @@ function CommitsGraphicViewModel(){
     
     self.chartSort.subscribe( function(){ self.loadCommit(self.commitLoaded); }, self);
     
+    self.currentCommitAdditions = ko.observable();
+    
+    self.currentCommitDeletions = ko.observable();
+    
     /**
      * Displays the commit passed in for better analysis of what it did to the project
      * 
@@ -63,24 +67,30 @@ function CommitsGraphicViewModel(){
             return;
         }
         
+        
         self.commitLoaded = commitToLoad;
         
+        //function that will load the graphing information for chartjs to display
         var onDataRecived = function(data){
            
             var ctx = document.getElementById("purposesChart").getContext("2d");
             
             if(self.chart === null){
             
-                self.chart = new Chart(ctx).Radar(data);
+                self.chart = new Chart(ctx).Radar(data.graphData);
             
             } else {
                 
                 console.log(self.chart);
                 self.chart.destroy();
-                self.chart = new Chart(ctx).Radar(data);
+                self.chart = new Chart(ctx).Radar(data.graphData);
 
             }
-           
+            
+            //Display overall commit info
+            self.currentCommitAdditions(data.commitInfo.overallAdditions);
+            self.currentCommitDeletions(data.commitInfo.overallDeletions);
+
         };
         
         if(self.chartSort() === "Purpose"){

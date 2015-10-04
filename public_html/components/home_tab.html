@@ -48,7 +48,7 @@ and open the template in the editor.
                         
                         <div class="media" >
                             <div class="media-left">
-                                <a data-bind="attr: { href: profileUrl }">
+                                <a data-bind="if:profileUrl, attr: { href: profileUrl }">
                                     <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: profilePicURL }" style="width:64px; height:64px;">
                                 </a>
                             </div>

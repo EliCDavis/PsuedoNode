@@ -63,6 +63,7 @@ function GithubHandler(reference,username){
             }
             
             if(callback != null){
+                console.log(repos);
                 callback(repos);
             }
             
@@ -74,14 +75,15 @@ function GithubHandler(reference,username){
     
     
     self.startNewPseudonodeProjectWithRepo = function(root, repoName, flatRoot){
-        applicationsViewModel.nameOfProjectLoaded(repoName);
+        workspace.repoCurrentelyLoadedInfo = repoName;
+        applicationsViewModel.nameOfProjectLoaded(repoName.name);
         applicationsViewModel.projectFileTree(root);
         applicationsViewModel.loadProjectFiles(flatRoot)
         applicationsViewModel.openInTabs();
     };
     
     
-    self.loadRepo = function(repoName, rootToLoadInto){
+    self.loadRepo = function(repoName){
         
         if(self.githubReference === null){
             console.error("The reference to github is null!");
@@ -91,7 +93,7 @@ function GithubHandler(reference,username){
             console.error("The repo to load is invalid! Repo:",repoName);
         }
         
-        var repo = self.githubReference.getRepo(self.githubUsername, repoName);
+        var repo = self.githubReference.getRepo(repoName.author, repoName.name);
         
         //repo.show(function(err, repoResults) {console.log(repoResults);});
         
@@ -212,16 +214,17 @@ function GithubHandler(reference,username){
     };
     
     
-    self.loadProjectFromConfigFile = function(repoName, data, tree, flattened){
+    self.loadProjectFromConfigFile = function(repo, data, tree, flattened){
            
         var config = JSON.parse(data);
         
-        workspace.loadFromJSON(repoName, config, tree, flattened);
+        workspace.loadFromJSON(repo, config, tree, flattened);
         
     };
     
-    self.commitWorspaceSettings = function(repoName, data){
-        var repo = self.githubReference.getRepo(self.githubUsername, repoName);
+    self.commitWorspaceSettings = function(repoInfo, data){
+        console.log(repoInfo)
+        var repo = self.githubReference.getRepo(repoInfo.author, repoInfo.name);
         
         repo.write('master', "pseudonode.json", JSON.stringify(data), "Saving of workspace from the webapplication PseudoNode", function(err){
             
@@ -233,6 +236,26 @@ function GithubHandler(reference,username){
         });
     };
     
+    /**
+     * This updates the projects readme file.
+     * 
+     * @param {type} repoInfo info needed for making the api calls to github
+     * @param {type} readMe the readme info we want to be reflected inside of the project
+     * @returns {undefined}
+     */
+    self.commitReadMEChanges = function(repoInfo, readMe){
+        console.log(repoInfo)
+        var repo = self.githubReference.getRepo(repoInfo.author, repoInfo.name);
+        
+        repo.write('master', "README.md", unescape(encodeURIComponent(readMe)), "Updating of README through PseudoNode", function(err){
+            
+            if(err !== null){
+                alert("Error saving changes to repo!");
+                console.log(err);
+            }
+            
+        });
+    };
     
     
     self.getCommitInformation = function(repo, sha, cb){

@@ -13,12 +13,43 @@ and open the template in the editor.
             
             <div data-bind="visible: !loggedIn()">
                 <h3>Log in to Github</h3>
+                
+                
+                <script>
+                    
+                    // Disables page submission (and the accompanying page reload) when the specified form is submitted.
+                    $('#githubLogInForm').submit(false);
+                    
+                    // This function is not being used right now, but I'll keep it around in case we do find a use for it.
+//                    function watchReturnKeyBeingPressedInInputField(inputID) {
+//                       $(inputID).keypress(function (e) {
+//                                      console.log(e);
+//                                        if (e === 13) {
+//
+//                                              console.log("Return key detected. e: ", e);
+//                                              signIntoGithub();
+//                                        });
 
-                <label for="exampleInputName2">Username</label>
-                <input type="text" class="form-control" id="githubUserName" placeholder="Jane Doe">
-                <label for="exampleInputPassword1">Password</label>
-                <input type="password" class="form-control" id="githubPassword" placeholder="Password">
-                <button class="btn btn-default" onclick="signIntoGithub()">Sign in</button>
+                    }
+                
+                    </script>
+                
+                <form id="githubLogInForm" method="post">
+                    
+                    Github Username<br>
+                    
+                    <input type="text" class="form-control" id="githubUserName" name="firstname" placeholder="Username">
+                        <br>
+                        
+                        Github Password<br>
+                        
+                        <input type="password" class="form-control" id="githubPassword" name="lastname" placeholder="Password">
+                            <br>
+                            
+                            <button class="btn btn-primary pull-right" onclick="signIntoGithub()">Log in</button>
+                                <br><br>
+                                
+                                </form>
             </div>
             
             <div data-bind="visible: loggedIn()">

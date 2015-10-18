@@ -7,58 +7,54 @@ and open the template in the editor.
 
 
 <div class="container-fluid">
+    
     <div class="row">
-        
-        <div class='col-xs-12 col-sm-6 col-md-4'>
             
-            <div data-bind="visible: !loggedIn()">
+        <div data-bind="visible: !loggedIn()">
+            
+            <div class='col-xs-12 col-sm-6 col-md-4'>
+                
                 <h3>Log in to Github</h3>
-                
-                
+
                 <script>
-                    
+
                     // Disables page submission (and the accompanying page reload) when the specified form is submitted.
                     $('#githubLogInForm').submit(false);
-                    
-                    // This function is not being used right now, but I'll keep it around in case we do find a use for it.
-//                    function watchReturnKeyBeingPressedInInputField(inputID) {
-//                       $(inputID).keypress(function (e) {
-//                                      console.log(e);
-//                                        if (e === 13) {
-//
-//                                              console.log("Return key detected. e: ", e);
-//                                              signIntoGithub();
-//                                        });
 
-                    }
-                
-                    </script>
-                
+                </script>
+
                 <form id="githubLogInForm" method="post">
-                    
+
                     Github Username<br>
-                    
+
                     <input type="text" class="form-control" id="githubUserName" name="firstname" placeholder="Username">
-                        <br>
-                        
-                        Github Password<br>
-                        
-                        <input type="password" class="form-control" id="githubPassword" name="lastname" placeholder="Password">
-                            <br>
-                            
-                            <button class="btn btn-primary pull-right" onclick="signIntoGithub()">Log in</button>
-                                <br><br>
-                                
-                                </form>
+                    <br>
+
+                    Github Password<br>
+
+                    <input type="password" class="form-control" id="githubPassword" name="lastname" placeholder="Password">
+                    <br>
+
+                    <button class="btn btn-primary pull-right" onclick="signIntoGithub()">Log in</button>
+                    <br><br>
+
+                </form>
+                
             </div>
             
-            <div data-bind="visible: loggedIn()">
+        </div>
+            
+        
+        
+        <div data-bind="visible: loggedIn()">
                
+            <div class='col-xs-12 col-sm-6 col-md-4'>
+                
                 <br />
                 
                 <div class="media" data-bind="with: basicGithubUserInfo">
                     <div class="media-left">
-                        <a data-bind="attr: { href: profileUrl }">
+                        <a data-bind="attr: { href: profileUrl }" target="_blank">
                             <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: profilePicURL }" style="width:64px; height:64px;">
                         </a>
                     </div>
@@ -75,11 +71,11 @@ and open the template in the editor.
                 <div data-bind="if: applicationsViewModel.nameOfProjectLoaded().length != 0 ">
                     <!--<h3 data-bind="text: applicationsViewModel.nameOfProjectLoaded" />-->
                     <h3>Commits</h3>
-                    <div data-bind="foreach: repoCommits" style='overflow:auto; height: 450px;'>
+                    <div data-bind="foreach: repoCommits" style='overflow:auto; height: 600px;'>
                         
                         <div class="media" >
                             <div class="media-left">
-                                <a data-bind="if:profileUrl, attr: { href: profileUrl }">
+                                <a data-bind="if:profileUrl, attr: { href: profileUrl }" target="_blank">
                                     <img class="media-object pull-left img-thumbnail" data-bind="attr: { src: profilePicURL }" style="width:64px; height:64px;">
                                 </a>
                             </div>
@@ -95,7 +91,7 @@ and open the template in the editor.
                             <br />
                             <p style="margin-left: 10px" data-bind="text: message" />
                             
-                            <a data-bind="attr: { href: commitHTMLLink }">
+                            <a data-bind="attr: { href: commitHTMLLink }" target="_blank">
                                 <button type="button" class="btn btn-default btn-sm">
                                     <span class="glyphicon glyphicon-link" aria-hidden="true"></span>
                                 </button>
@@ -110,31 +106,48 @@ and open the template in the editor.
                     
                 </div>
                 
-                
-                <div data-bind="if: applicationsViewModel.nameOfProjectLoaded().length == 0 ">
-                
-                    <h3>List of Repos:</h3>
-                    
-                    <div data-bind='foreach: usersRepos'>
-                        <h4><button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.loadRepo'>
-                            <span class='glyphicon glyphicon-import' aria-hidden='true'></span> </button><span data-bind='text: name'></span></h4>
-                        <p data-bind='text: description'></p>
-                    </div>
-                    
-                </div>
-            
             </div>
+            
+                
+            <div data-bind="if: applicationsViewModel.nameOfProjectLoaded().length == 0 ">
+
+                
+                <h3>List of Repos:</h3>
+
+                <div data-bind='foreach: usersRepos'>
+                    <div class='col-xs-12 col-sm-6 col-md-4'>
+
+<!--                        <h4><button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.loadRepo'>
+                            <span class='glyphicon glyphicon-import' aria-hidden='true'></span> </button><span data-bind='text: name'></span></h4>
+                        <p data-bind='text: description'></p>-->
+
+                        <button type='button' class='btn btn-default btn-xs' data-bind='click: $parent.loadRepo' style="width:100%; white-space: normal">
+                            <h4>
+                                <span data-bind='text: name'></span>
+                            </h4>
+                            
+                            <p data-bind='text: description'></p>
+                        </button>
+
+                    </div>
+                </div>
+
+            </div>
+
             
         </div>
         
         <div class='col-xs-12 col-sm-6 col-md-8'>
+            
             <br />
             <div data-bind="if: canEditReadMe">
                 <button type="button" class='btn btn-default btn-sm' data-bind="click: toggleEditingReadMe">Edit README</button>
             </div>
-            <div data-bind="if: !currentelyEditingReadme()">
+            
+            <div data-bind="if: !currentelyEditingReadme()" style='width:100%;'>
                 <span data-bind="html: readMeHTML"></span>
             </div>
+            
             <div data-bind="if: currentelyEditingReadme()">
                 <br />
                 <textarea class='form-control' style='width:100%;' rows='25' data-bind="value: repoReadMeRaw"></textarea>

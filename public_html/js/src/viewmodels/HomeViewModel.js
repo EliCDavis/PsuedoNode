@@ -46,6 +46,8 @@ function HomeViewModel(){
             self.readMeHasChanged = true;
         }
         
+        console.log(self.showdown.makeHtml(self.repoReadMeRaw()));
+        
         return self.showdown.makeHtml(self.repoReadMeRaw());
         
     },self);

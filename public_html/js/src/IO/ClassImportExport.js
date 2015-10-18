@@ -75,7 +75,8 @@ function ClassImportExport(){
                 
                 for(var i = 0; i < purposes.length; i ++){
                     if( parseInt( classJSON.purposes[jsonIter] ) === parseInt( purposes[i].id ) ){
-                        classModel.purposesItServes.push(purposes[i]);
+                        classModel.purposesItServes.push( purposes[i] );
+                        purposes[i].classesAssociated.push(classModel );
                     }
                 }
                 
